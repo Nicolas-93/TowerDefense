@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.tcc": "cpp",
+        "grid.h": "c",
+        "utils.h": "c",
+        "mlv_all.h": "c"
+    }
+}

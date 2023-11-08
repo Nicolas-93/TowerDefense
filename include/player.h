@@ -3,11 +3,24 @@
 
 #include <stdint.h>
 #include "inventory.h"
+#include "mana.h"
 
 typedef struct Player {
-    uint32_t mana;
+    Mana mana;
     Inventory inv;
-    uint32_t level;
 } Player;
+
+/**
+ * @brief Create a new Player object
+ * 
+ * @param self Player object
+ */
+void Player_new(Player* self);
+
+bool Player_buy_gem(Player* self);
+
+bool Player_buy_mana_upgrade(Player* self);
+
+bool Player_buy_tower(Player* self);
 
 #endif

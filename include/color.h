@@ -8,8 +8,13 @@ typedef struct ColorHSV {
     uint16_t h;
     uint8_t s;
     uint8_t v;
-} ColorHSV ;
+} ColorHSV;
 
-MLV_Color Color_hsv_to_mlvrgb(ColorHSV c);
+typedef struct Color {
+    ColorHSV hsv;
+    MLV_Color mlvrgb;
+} Color;
+
+Color Color_new_from_hsv(ColorHSV c);
 
 #endif
