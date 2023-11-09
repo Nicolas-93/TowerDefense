@@ -2,6 +2,7 @@
 #define GRID_H
 
 #include "geom.h"
+#include "error.h"
 #include <MLV/MLV_all.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -31,6 +32,7 @@ typedef struct {
  * ``grid_base`` is NULL, otherwise relative to ``grid_base``.
  * with respect to the requested coordinates,
  *
+ * @param self Grid to initialize
  * @param width Number of columns
  * @param height Number of rows
  * @param margin Coefficient of margin
@@ -40,9 +42,10 @@ typedef struct {
  * @param square Specifies whether the grid should be square or stretched
  * @param filled_color Color of cell background
  * @param color_border Color of cell borders
- * @return Grid* Instance of grid
+ * @return Error
  */
-Grid* Grid_new(
+Error Grid_new(
+    Grid* self,
     uint16_t width, uint16_t height,
     float margin,
     Grid* grid_base, Rect grid_position, bool square,

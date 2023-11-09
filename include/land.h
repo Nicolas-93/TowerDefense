@@ -20,11 +20,12 @@ typedef struct Land {
  * @brief Create a new Land object, with a given width and height.
  * 
  * @param self 
+ * @param parent Parent grid
  * @param width 
  * @param height 
  * @return Error 
  */
-Error Land_new(Land* self, uint16_t width, uint16_t height);
+Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height);
 
 /**
  * @brief Add a tower to the land

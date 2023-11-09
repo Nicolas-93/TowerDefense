@@ -4,17 +4,14 @@
 
 static int _Grid_init_cells(Grid* grid);
 
-Grid* Grid_new(
+Error Grid_new(
+    Grid* self,
     uint16_t width, uint16_t height,
     float margin,
     Grid* grid_base, Rect grid_position, bool square,
-    MLV_Color filled_color, MLV_Color color_border) {    
-    
-    Grid* grid;
-    if (!(grid = malloc(sizeof(Grid))))
-        return NULL;
+    MLV_Color filled_color, MLV_Color color_border) {
 
-    *grid = (Grid) {
+    *self = (Grid) {
         .width = width, .height = height,
         .margin = margin,
         .square = square,
@@ -22,25 +19,24 @@ Grid* Grid_new(
     };
 
     if (grid_base != NULL) {
-        grid->view.a = Grid_get_absolute_coords_TL(
+        self->view.a = Grid_get_absolute_coords_TL(
             grid_base,
             grid_position.a
         );
-        grid->view.b = Grid_get_absolute_coords_BR(
+        self->view.b = Grid_get_absolute_coords_BR(
             grid_base,
             grid_position.b
         );
     }
     else {
-        grid->view = grid_position;
+        self->view = grid_position;
     }
 
-    if (_Grid_init_cells(grid)) {
-        return grid;
+    if (_Grid_init_cells(self) == ERR_ALLOC) {
+        return ERR_ALLOC;
     }
 
-    free(grid);
-    return NULL;
+    return 0;
 }
 
 void Grid_free(Grid* grid) {
@@ -48,7 +44,6 @@ void Grid_free(Grid* grid) {
         free(grid->cells[i]);
     }
     free(grid->cells);
-    free(grid);
 }
 
 Point Grid_get_absolute_coords_TL(Grid* grid, Point cell_relative) {
@@ -59,10 +54,10 @@ Point Grid_get_absolute_coords_BR(Grid* grid, Point cell_relative) {
     return grid->cells[(int) cell_relative.y][(int) cell_relative.x].pos.b;
 }
 
-static int _Grid_init_cells(Grid* grid) {
+static Error _Grid_init_cells(Grid* grid) {
     Cell** cells = calloc(grid->height, sizeof(Cell*));
     if (cells == NULL) {
-        return 0;
+        return ERR_ALLOC;
     }
 
     int outside_width  = grid->view.bx - grid->view.ax;
@@ -111,7 +106,7 @@ static int _Grid_init_cells(Grid* grid) {
     }
     grid->cells = cells;
 
-    return 1;
+    return 0;
 }
 
 void Grid_draw_lines(const Grid* grid) {

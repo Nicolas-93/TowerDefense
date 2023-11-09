@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "arraylist.h"
+#include "geom.h"
 
 typedef enum PathCase {
     PATH_CASE_EMPTY,
@@ -23,13 +24,6 @@ typedef struct Path {
  * @param self 
  */
 void Path_new(Path* self);
-
-/**
- * @brief Generate a path in the land
- * 
- * @param self 
- */
-static void _Path_generate_path(Path* self);
 
 /**
  * @brief Get the start point of the path
