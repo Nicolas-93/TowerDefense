@@ -1,0 +1,6 @@
+- Génération
+    - Corriger la marge
+    - Optionnellement vérifier que le chemin ne réalise pas de boucles
+    - Mettre à jour les waypoints
+
+- Graphique

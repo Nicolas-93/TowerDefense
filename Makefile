@@ -4,7 +4,7 @@ SRC_DIR=src
 INC_DIR=include
 INCLUDE=-I$(INC_DIR)
 LIBS=-lm -lMLV
-CFLAGS=-fdiagnostics-color=always -Wall -pedantic -std=c17 -g -O0
+CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -Wall -pedantic -std=c17 -g -O0
 TP_N=3
 NOM_ZIP=TP$(TP_N)_SEBAN_Nicolas.zip
 EXEC=td

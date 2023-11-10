@@ -2,6 +2,7 @@
 #define PATH_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "arraylist.h"
 #include "geom.h"
 
@@ -9,6 +10,7 @@ typedef enum PathCase {
     PATH_CASE_EMPTY,
     PATH_CASE_START,
     PATH_CASE_END,
+    PATH_CASE
 } PathCase;
 
 typedef struct Path {
@@ -40,5 +42,12 @@ Point Path_get_start(const Path* self);
  * @return Point 
  */
 Point Path_get_end(const Path* self);
+
+/**
+ * @brief Print path
+ * 
+ * @param self 
+ */
+void Path_print(Path* self);
 
 #endif
