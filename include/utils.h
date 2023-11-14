@@ -15,11 +15,14 @@
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
+#define ABS(a) ((a) < 0 ? -(a) : (a))
+
 double rand_double(double n);
 
 double uniform(double a, double b);
 
 int weighted_selection(int arrsize, int arr[arrsize]);
+
 
 typedef enum Direction {
     UP = 0,
@@ -27,5 +30,7 @@ typedef enum Direction {
     RIGHT,
     LEFT,
 } Direction;
+
+extern const char* DIRECTIONS_STR[4];
 
 #endif

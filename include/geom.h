@@ -19,7 +19,7 @@ typedef union {
     };
 } Rect;
 
-Rect Rect_2points(Point a, Point b);
+int Geom_manhattan_distance(Point a, Point b);
 
 Vector2D Vector2D_add(Vector2D v1, Vector2D v2);
 

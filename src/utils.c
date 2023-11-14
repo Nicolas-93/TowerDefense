@@ -1,6 +1,14 @@
 #include "utils.h"
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
+
+const char* DIRECTIONS_STR[4] = {
+    [LEFT]  = "LEFT",
+    [RIGHT] = "RIGHT",
+    [UP]    = "UP",
+    [DOWN]  = "DOWN",
+};
 
 double rand_double(double n) {
     return (double)rand() / (double)(RAND_MAX / n);
@@ -19,6 +27,10 @@ int weighted_selection(int arrsize, int arr[arrsize]) {
     }
 
     int total = cumulative[arrsize - 1];
+    // assert(total > 0);
+    if (total == 0) {
+        return 0;
+    }
     int rnd = rand() % total;
 
     for (int i = 0; i < arrsize; ++i) {
