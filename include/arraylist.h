@@ -63,6 +63,15 @@ ArrayListError ArrayList_append(ArrayList* self, void* elem);
 void* ArrayList_get(const ArrayList* self, int64_t i);
 
 /**
+ * @brief Get element's value at index i if positive,
+ * len - i, if negative
+ * @param self ArrayList object
+ * @param i index
+ * @param type value's type
+ */
+#define ArrayList_get_v(self, i, type) (*((type*) ArrayList_get(self, i)))
+
+/**
  * @brief ArrayList pop last element
  * 
  * @param self ArrayList object
