@@ -1,14 +1,8 @@
 #include "utils.h"
+#include "geom.h"
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-
-const char* DIRECTIONS_STR[4] = {
-    [LEFT]  = "LEFT",
-    [RIGHT] = "RIGHT",
-    [UP]    = "UP",
-    [DOWN]  = "DOWN",
-};
 
 double rand_double(double n) {
     return (double)rand() / (double)(RAND_MAX / n);

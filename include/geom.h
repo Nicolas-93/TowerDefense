@@ -19,6 +19,25 @@ typedef union {
     };
 } Rect;
 
+typedef enum Direction {
+    UP = 0,
+    DOWN,
+    RIGHT,
+    LEFT,
+} Direction;
+
+typedef enum Axis {
+    HORIZONTAL,
+    VERTICAL,
+} Axis;
+
+extern const char* DIRECTIONS_STR[4];
+
+extern const Vector2D DIRECTIONS_VECT[4];
+
+extern const Axis DIRECTION_TO_AXIS[4];
+
+
 int Geom_manhattan_distance(Point a, Point b);
 
 Vector2D Vector2D_add(Vector2D v1, Vector2D v2);

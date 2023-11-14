@@ -23,14 +23,4 @@ double uniform(double a, double b);
 
 int weighted_selection(int arrsize, int arr[arrsize]);
 
-
-typedef enum Direction {
-    UP = 0,
-    DOWN,
-    RIGHT,
-    LEFT,
-} Direction;
-
-extern const char* DIRECTIONS_STR[4];
-
 #endif
