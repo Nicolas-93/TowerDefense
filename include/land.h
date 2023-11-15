@@ -7,6 +7,9 @@
 #include "deque.h"
 #include "monster.h"
 #include "path.h"
+#include "timer.h"
+
+#define H_PARAMETER 1
 
 typedef struct Land {
     Path path;              /*< Monsters path */
@@ -14,7 +17,33 @@ typedef struct Land {
     Deque monsters;         /*< Monsters on the land */
     uint16_t wave_counter;  /*< Monsters waves counter */
     Grid grid;              /*< Land's grid */
+    Timer next_wave_timer;  /*< Time before next wave */
 } Land;
+
+typedef enum MonsterWaveType {
+    WAVE_NORMAL,
+    WAVE_CROWD,
+    WAVE_AGILE,
+    WAVE_BOSS
+} MonsterWaveType;
+
+typedef struct MonsterWave {
+    MonsterWaveType type;
+    int probability;
+    int size;
+    int speed;
+} MonsterWave;
+
+#define NB_MONSTER_WAVES 4
+
+extern const MonsterWave WAVES[NB_MONSTER_WAVES];
+
+#define WAVES_PROBABILITIES { \
+    [WAVE_NORMAL] = 50, \
+    [WAVE_CROWD] = 20, \
+    [WAVE_AGILE] = 20, \
+    [WAVE_BOSS] = 10, \
+}
 
 /**
  * @brief Create a new Land object, with a given width and height.
@@ -32,23 +61,24 @@ Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height);
  * 
  * @param self 
  * @param tower 
+ * @return Error ERR_TOWER_ALREADY_PRESENT if a tower is already present
  */
-void Land_add_tower(Land* self, Tower* tower);
-
-/**
- * @brief Add a monster to the land
- * 
- * @param self 
- * @param monster 
- */
-void _Land_add_monster(Land* self, Monster* monster);
+Error Land_add_tower(Land* self, Tower* tower);
 
 /**
  * @brief Add a wave of monsters to the land
  * 
  * @param self 
+ * @param wave Type of the wave
  */
-void Land_add_monster_wave(Land* self); 
+void Land_new_monster_wave(Land* self, MonsterWave wave);
+
+/**
+ * @brief Add a random wave of monsters to the land
+ * 
+ * @param self 
+ */
+void Land_new_random_monster_wave(Land* self);
 
 /**
  * @brief Check if a cell is part of the path

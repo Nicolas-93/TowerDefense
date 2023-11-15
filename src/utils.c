@@ -12,7 +12,7 @@ double uniform(double a, double b) {
     return a + (b - a) * rand_double(1);
 }
 
-int weighted_selection(int arrsize, int arr[arrsize]) {
+int weighted_selection(int arrsize, const int arr[arrsize]) {
     int cumulative[arrsize];
     memcpy(cumulative, arr, arrsize * sizeof(int));
 

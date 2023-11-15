@@ -148,12 +148,19 @@ void Grid_draw_lines(const Grid* grid) {
 void Grid_draw_filled_rects(const Grid* grid) {
     for (int i = 0; i < grid->height; ++i) {
         for (int j = 0; j < grid->width; ++j) {
-            MLV_draw_rectangle(
+            MLV_draw_filled_rectangle(
                 grid->cells[i][j].pos.ax, grid->cells[i][j].pos.ay,
                 grid->cell_width, grid->cell_height,
-                grid->filled_color
+                grid->cells[i][j].filled_color
             );
         }
     }
 }
 
+Cell* Grid_get_cell(Grid* grid, Point cell_relative) {
+    if (cell_relative.x < 0 || cell_relative.x >= grid->width
+        || cell_relative.y < 0 || cell_relative.y >= grid->height) {
+        return NULL;
+    }
+    return &grid->cells[(int) cell_relative.y][(int) cell_relative.x];
+}

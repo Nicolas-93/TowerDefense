@@ -50,4 +50,15 @@ Point Path_get_end(const Path* self);
  */
 void Path_print(Path* self);
 
+/**
+ * @brief Check if a cell is part of the path
+ * 
+ * @param self 
+ * @param x // beau point commun avec éclipse ça Comment ça non ?
+ * @param y 
+ * @return true 
+ * @return false 
+ */
+bool Path_is_path(const Path* self, uint16_t x, uint16_t y);
+
 #endif

@@ -17,20 +17,6 @@ static bool _Path_case_is_outside(Path* self, Point a) {
     );
 }
 
-static bool _Path_case_in_segment(Point cell, Point p1, Point p2) {
-    if (p1.x == p2.x) {
-        return (
-            cell.x == p1.x && cell.y >= MIN(p1.y, p2.y)
-                           && cell.y <= MAX(p1.y, p2.y));
-    }
-    if (p1.y == p2.y) {
-        return (
-            cell.y == p1.y && cell.x >= MIN(p1.x, p2.x)
-                           && cell.x <= MAX(p1.x, p2.x));
-    }
-    return false;
-}
-
 static bool _Path_case_is_distant(Path* self, Point origin, Direction dir) {
     int x_start = origin.x - MIN_DIST;
     int x_end   = origin.x + MIN_DIST;
@@ -54,7 +40,7 @@ static bool _Path_case_is_distant(Path* self, Point origin, Direction dir) {
                 continue;
             }
             if (ArrayList_get_length(&self->waypoints) >= 2
-                && _Path_case_in_segment(
+                && Point_on_segment(
                         current,
                         ArrayList_get_v(&self->waypoints, -1, Point),
                         ArrayList_get_v(&self->waypoints, -2, Point))
@@ -133,8 +119,6 @@ static Point _Path_add_segment(Path* self, Point start, Direction dir, int seg_s
 }
 
 static Direction _Path_new_turn(Axis axis, int etendues[4]) {
-    int new_dirs[2];
-
     if (axis == VERTICAL) {
         return weighted_selection(2, etendues + UP) + UP;
     }
@@ -222,9 +206,12 @@ Point Path_get_start(const Path* self) {
     return ArrayList_get_v(&self->waypoints, 0, Point);
 }
 
-
 Point Path_get_end(const Path* self) {
     return ArrayList_get_v(&self->waypoints, -1, Point);
+}
+
+bool Path_is_path(const Path* self, uint16_t x, uint16_t y) {
+    return self->arr2d[y][x] == PATH_CASE;
 }
 
 void Path_new(Path* self) {

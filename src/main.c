@@ -1,4 +1,3 @@
-#define _GNU_SOURCE
 #include <MLV/MLV_all.h>
 #include <stdbool.h>
 #include <time.h>
@@ -8,23 +7,20 @@
 
 static Args ARGS = {
     .win = {
-        .width = 1000,
-        .height = 800,
+        .width = 500,
+        .height = 400,
+        .fps = 60,
     }
 };
 
 int main(int argc, char const *argv[]) {
 
     MLV_create_window("", "", ARGS.win.width, ARGS.win.height);
+    MLV_change_frame_rate(ARGS.win.fps);
 
     Grid window_grid;
     Land land;
 
-    /*
-    struct timespec end_time, start_time;
-    double elapsed = 0;
-    double extratime = 0;
-    */
     Grid_new(
         &window_grid, 10, 6, 0.95,
         NULL,
@@ -36,27 +32,16 @@ int main(int argc, char const *argv[]) {
     Land_new(&land, &window_grid, 28, 22);
     Path_print(&land.path);
 
-    /**
     while (true) {
-        const double fps = 60;
-        const double frame_time = 1.0 / fps * 1000;
-        clock_gettime(CLOCK_REALTIME, &start_time);
-
+        MLV_clear_window(MLV_COLOR_GRAY50);
         Land_anim(&land);
 
-        Grid_draw_lines(&window_grid);
-        Grid_draw_lines(&land.grid);
+        Land_draw(&land);
+        // Grid_draw_lines(&window_grid);
         MLV_update_window();
 
-        clock_gettime(CLOCK_REALTIME, &end_time);
-
-        elapsed = (end_time.tv_sec - start_time.tv_sec) * 1e3 + (end_time.tv_nsec - start_time.tv_nsec) / 1e6;
-        extratime = frame_time - elapsed;
-
-        if (extratime > 0) {
-            MLV_wait_milliseconds(extratime);
-        }
-    }*/
+        MLV_delay_according_to_frame_rate();
+    }
 
     return EXIT_SUCCESS;
 

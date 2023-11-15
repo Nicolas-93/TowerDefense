@@ -5,6 +5,7 @@ typedef struct Args {
     struct {
         int width;
         int height;
+        int fps;
     } win;
 } Args;
 
