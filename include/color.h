@@ -15,6 +15,19 @@ typedef struct Color {
     MLV_Color mlvrgb;
 } Color;
 
+/**
+ * @brief Create a new Color object from HSV values
+ * 
+ * @param c HSV values
+ * @return Color 
+ */
 Color Color_new_from_hsv(ColorHSV c);
+
+/**
+ * @brief Create a new random Color object
+ * 
+ * @return Color 
+ */
+Color Color_new_random(void);
 
 #endif

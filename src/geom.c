@@ -1,5 +1,6 @@
 #include "geom.h"
 #include "utils.h"
+#include <math.h>
 
 const char* DIRECTIONS_STR[4] = {
     [UP]    = "UP",
@@ -22,10 +23,21 @@ const Axis DIRECTION_TO_AXIS[4] = {
     [DOWN]  = VERTICAL,
 };
 
+bool Vector2D_equals(Vector2D v1, Vector2D v2) {
+    return v1.x == v2.x && v1.y == v2.y;
+}
+
 Vector2D Vector2D_add(Vector2D v1, Vector2D v2) {
     return (Vector2D) {
         .x = v1.x + v2.x,
         .y = v1.y + v2.y
+    };
+}
+
+Vector2D Vector2D_sub(Vector2D v1, Vector2D v2) {
+    return (Vector2D) {
+        .x = v1.x - v2.x,
+        .y = v1.y - v2.y
     };
 }
 
@@ -36,7 +48,35 @@ Vector2D Vector2D_mul(Vector2D v, double n) {
     };
 }
 
+double Vector2D_norm(Vector2D v) {
+    return sqrt(v.x * v.x + v.y * v.y);
+}
+
+double Vector2D_normalize(Vector2D* v) {
+    double norm = Vector2D_norm(*v);
+    if (norm != 0) {
+        v->x /= norm;
+        v->y /= norm;
+    }
+    return norm;
+}
 
 int Geom_manhattan_distance(Point a, Point b) {
     return ABS(a.x - b.x) + ABS(a.y - b.y);
+}
+
+bool Point_on_segment(Point cell, Point p1, Point p2) {
+    if (p1.x == p2.x) {
+        return (
+            cell.x == p1.x && cell.y >= MIN(p1.y, p2.y)
+                           && cell.y <= MAX(p1.y, p2.y)
+        );
+    }
+    if (p1.y == p2.y) {
+        return (
+            cell.y == p1.y && cell.x >= MIN(p1.x, p2.x)
+                           && cell.x <= MAX(p1.x, p2.x)
+        );
+    }
+    return false;
 }
