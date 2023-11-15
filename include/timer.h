@@ -1,12 +1,13 @@
 #ifndef TIMER_H
 #define TIMER_H
-
-#include <sys/time.h>
+#define _DEFAULT_SOURCE
+#include <unistd.h>
+#include <time.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 typedef struct Timer {
-    struct timeval future;
+    struct timespec future;
 } Timer;
 
 /**
@@ -15,7 +16,7 @@ typedef struct Timer {
  * @param milliseconds 
  * @return Timer 
  */
-Timer Timer_new_ms(uint32_t milliseconds);
+Timer Timer_new_ms(uint64_t milliseconds);
 
 /**
  * @brief Check if the timer is over.
@@ -27,11 +28,14 @@ Timer Timer_new_ms(uint32_t milliseconds);
 bool Timer_is_over(const Timer* self);
 
 /**
- * @brief Get the remaining time in milliseconds.
+ * @brief Get time difference in milliseconds.
+ * If the timer is over, return a negative value
+ * (time that has passed since the timer ended).
+ * else return a positive value (remaining time).
  * 
  * @param self 
- * @return uint32_t 
+ * @return uint64_t 
  */
-uint32_t Timer_get_remaining_time(const Timer* self);
+int64_t Timer_get_difference(const Timer* self);
 
 #endif
