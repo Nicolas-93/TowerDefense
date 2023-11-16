@@ -18,3 +18,10 @@ Traject Traject_new_from_points(Point a, Point b, float speed) {
         .speed = speed,
     };
 }
+
+void Traject_move(Traject* self) {
+    self->pos = Vector2D_add(
+        self->pos,
+        Vector2D_mul(self->dir, self->speed)
+    );
+}

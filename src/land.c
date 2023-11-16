@@ -47,6 +47,7 @@ Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height) {
         true, MLV_COLOR_WHITE, MLV_COLOR_BLACK
     );
     _Land_set_grid_color(self);
+    Land_new_random_monster_wave(self);
 
     return 0;
 }
@@ -143,12 +144,20 @@ bool Land_is_occupied(const Land* self, const uint16_t x, const uint16_t y) {
 }
 
 void Land_anim(Land* self) {
-
+    DequeNode* entry;
+    DEQUE_FOREACH(entry, &self->monsters) {
+        Monster_anim(Deque_get_elem(entry));
+    }
 }
 
 void Land_draw(const Land* self) {
     Grid_draw_filled_rects(&self->grid);
     Grid_draw_lines(&self->grid);
+    
+    DequeNode* entry;
+    DEQUE_FOREACH(entry, &self->monsters) {
+        Monster_draw(Deque_get_elem(entry));
+    }
 }
 
 void Land_free(Land* self) {

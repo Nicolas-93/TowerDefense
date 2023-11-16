@@ -4,6 +4,7 @@
 #include "grid.h"
 #include "args.h"
 #include "land.h"
+#include "image.h"
 
 static Args ARGS = {
     .win = {
@@ -17,6 +18,7 @@ int main(int argc, char const *argv[]) {
 
     MLV_create_window("", "", ARGS.win.width, ARGS.win.height);
     MLV_change_frame_rate(ARGS.win.fps);
+    Image_load_all();
 
     Grid window_grid;
     Land land;
