@@ -78,6 +78,15 @@ Point Grid_get_absolute_coords_TL(Grid* grid, Point cell_relative);
 Point Grid_get_absolute_coords_BR(Grid* grid, Point cell_relative);
 
 /**
+ * @brief Returns absolute coordinates of a cell's center
+ * 
+ * @param grid 
+ * @param cell_relative 
+ * @return Point 
+ */
+Point Grid_get_absolute_coords_C(Grid* grid, Point cell_relative);
+
+/**
  * @brief Returns cell's address in grid
  * 
  * @param grid Grid object

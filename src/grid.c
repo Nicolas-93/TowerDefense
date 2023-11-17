@@ -1,5 +1,6 @@
 #include "grid.h"
 #include "utils.h"
+#include "geom.h"
 #include <MLV/MLV_all.h>
 
 static int _Grid_init_cells(Grid* grid);
@@ -52,6 +53,14 @@ Point Grid_get_absolute_coords_TL(Grid* grid, Point cell_relative) {
 
 Point Grid_get_absolute_coords_BR(Grid* grid, Point cell_relative) {
     return grid->cells[(int) cell_relative.y][(int) cell_relative.x].pos.b;
+}
+
+Point Grid_get_absolute_coords_C(Grid* grid, Point cell_relative) {
+    Point TL = Grid_get_absolute_coords_TL(grid, cell_relative);
+    return (Point) {
+        .x = TL.x + grid->cell_width / 2,
+        .y = TL.y + grid->cell_height / 2
+    };
 }
 
 static Error _Grid_init_cells(Grid* grid) {
