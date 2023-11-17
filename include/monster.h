@@ -16,7 +16,7 @@ typedef struct Monster {
     Grid* grid;                 /*< Land's grid */
     uint16_t target_waypoint;   /*< Next waypoint compared to path's list */
     Color color;                /*< Color */
-    uint32_t initial_hp;        /*< Initial HP */
+    int32_t initial_hp;         /*< Initial HP */
     int32_t current_hp;         /*< Current HP */
     GemType last_gem_impact;    /*< Last gem that impacted the monster */
     Timer timer;                /*< Timer for gems effects */
