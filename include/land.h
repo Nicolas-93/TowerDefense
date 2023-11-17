@@ -84,34 +84,31 @@ void Land_new_random_monster_wave(Land* self);
  * @brief Check if a cell is part of the path
  * 
  * @param self 
- * @param x 
- * @param y 
+ * @param p Position to test
  * @return true 
  * @return false 
  */
-bool Land_is_path(const Land* self, const uint16_t x, const uint16_t y);
+bool Land_is_path(const Land* self, Point p);
 
 /**
  * @brief Check if a cell is part of a tower
  * 
  * @param self 
- * @param x 
- * @param y 
+ * @param p Position to test
  * @return true 
  * @return false 
  */
-bool Land_is_tower(const Land* self, const uint16_t x, const uint16_t y);
+bool Land_is_tower(const Land* self, Point p);
 
 /**
  * @brief Check if a cell is occupied by a tower or the path
  * 
  * @param self 
- * @param x 
- * @param y 
+ * @param p Position to test
  * @return true 
  * @return false 
  */
-bool Land_is_occupied(const Land* self, const uint16_t x, const uint16_t y);
+bool Land_is_occupied(const Land* self, Point p);
 
 /**
  * @brief Process and move land's objects

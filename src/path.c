@@ -210,8 +210,8 @@ Point Path_get_end(const Path* self) {
     return ArrayList_get_v(&self->waypoints, -1, Point);
 }
 
-bool Path_is_path(const Path* self, uint16_t x, uint16_t y) {
-    return self->arr2d[y][x] == PATH_CASE;
+bool Path_is_path(const Path* self, Point p) {
+    return self->arr2d[(int) p.y][(int) p.x] == PATH_CASE;
 }
 
 void Path_new(Path* self) {

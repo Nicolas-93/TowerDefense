@@ -55,10 +55,11 @@ Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height) {
 static void _Land_set_grid_color(Land* self) {
     for (int j = 0; j < self->grid.height; j++) {
         for (int i = 0; i < self->grid.width; i++) {
+            Point current = (Point) {.x = i, .y = j};
             Cell* cell = Grid_get_cell(
-                &self->grid, (Point) {.x = i, .y = j}
+                &self->grid, current
             );
-            if (Land_is_path(self, i, j)) {
+            if (Land_is_path(self, current)) {
                 cell->filled_color = MLV_COLOR_GRAY50;
             }
             else {
@@ -77,7 +78,7 @@ static void _Land_set_grid_color(Land* self) {
 Error Land_add_tower(Land* self, Tower* tower) {
     assert(tower);
 
-    if (Land_is_occupied(self, tower->pos.x, tower->pos.y)) {
+    if (Land_is_occupied(self, tower->pos)) {
         return ERR_CASE_ALREADY_USED;
     }
 
@@ -92,7 +93,7 @@ Error Land_add_tower(Land* self, Tower* tower) {
  * @param self 
  * @param monster 
  */
-static void _Land_add_monster(Land* self, Monster* monster) {
+static void _Land_add_monster(Land* self, const Monster* monster) {
     Deque_append(&self->monsters, monster);
 }
 
@@ -124,23 +125,22 @@ void Land_new_random_monster_wave(Land* self) {
     Land_new_monster_wave(self, WAVES[wave]);
 }
 
-bool Land_is_path(const Land* self, const uint16_t x, const uint16_t y) {
-    return Path_is_path(&self->path, x, y);
+bool Land_is_path(const Land* self, Point p) {
+    return Path_is_path(&self->path, p);
 }
 
-bool Land_is_tower(const Land* self, const uint16_t x, const uint16_t y) {
+bool Land_is_tower(const Land* self, Point p) {
     DequeNode* entry;
 
     DEQUE_FOREACH(entry, &self->towers)
-        if (Vector2D_equals(Deque_get_elem_v(entry, Point), (Point) {.x = x, .y = y}))
+        if (Vector2D_equals(Deque_get_elem_v(entry, Point), p))
             return true;
     
     return false;
 }
 
-bool Land_is_occupied(const Land* self, const uint16_t x, const uint16_t y) {
-    return Land_is_path(self, x, y)
-        || Land_is_tower(self, x, y);
+bool Land_is_occupied(const Land* self, Point p) {
+    return Land_is_path(self, p) || Land_is_tower(self, p);
 }
 
 void Land_anim(Land* self) {
