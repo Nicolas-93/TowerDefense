@@ -35,4 +35,14 @@ Traject Traject_new_from_points(Point a, Point b, float speed);
  */
 void Traject_move(Traject* self);
 
+/**
+ * @brief Check if the object has reached its target
+ * 
+ * @param self 
+ * @param target 
+ * @return true 
+ * @return false 
+ */
+bool Traject_is_over(Traject* self, Point target);
+
 #endif 

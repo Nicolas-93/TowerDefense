@@ -61,6 +61,10 @@ double Vector2D_normalize(Vector2D* v) {
     return norm;
 }
 
+double Vector2D_dist(Point a, Point b) {
+    return Vector2D_norm(Vector2D_sub(b, a));
+}
+
 int Geom_manhattan_distance(Point a, Point b) {
     return ABS(a.x - b.x) + ABS(a.y - b.y);
 }

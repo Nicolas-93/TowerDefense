@@ -25,3 +25,7 @@ void Traject_move(Traject* self) {
         Vector2D_mul(self->dir, self->speed)
     );
 }
+
+bool Traject_is_over(Traject* self, Point target) {
+    return Vector2D_dist(self->pos, target) < self->speed;
+}

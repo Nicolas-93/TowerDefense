@@ -73,6 +73,8 @@ double Vector2D_norm(Vector2D v);
 
 double Vector2D_normalize(Vector2D* v);
 
+double Vector2D_dist(Point a, Point b);
+
 double Vector2D_dot(Vector2D v1, Vector2D v2);
 
 #endif
