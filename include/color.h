@@ -6,8 +6,8 @@
 
 typedef struct ColorHSV {
     uint16_t h;
-    uint8_t s;
-    uint8_t v;
+    double s;
+    double v;
 } ColorHSV;
 
 typedef struct Color {

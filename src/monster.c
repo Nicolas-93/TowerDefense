@@ -38,7 +38,7 @@ void Monster_new(
         .path = path,
         .grid = grid,
         .target_waypoint = 0,
-        .color = (Color) {.hsv = {0}, .mlvrgb = MLV_COLOR_BLACK}, //Color_new_random(),
+        .color = Color_new_random(),
         .initial_hp = h * pow(1.2, wave_counter),
         .current_hp = self->initial_hp,
         .last_gem_impact = 0,
