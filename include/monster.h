@@ -52,9 +52,13 @@ void Monster_new(
  * 
  * @param self Monster object
  * @return true Monster is dead
- * @return false Monster is still alive
+ * @return Error
+ * INFO_MONSTER_BACK_TO_SPAWN if the monster has reached the end of the path
+ * and is back to spawn.
+ * INFO_MONSTER_IS_DEAD if the monster a shot has reached him
+ * and he died.
  */
-bool Monster_anim(Monster* self);
+Error Monster_anim(Monster* self);
 
 /**
  * @brief Draw the monster.

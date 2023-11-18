@@ -68,37 +68,55 @@ static bool _Monster_suffer_damages(Monster* self, const Shot* shot) {
  * 
  * @param self 
  * @param gem 
+ * @return INFO_MONSTER_IS_DEAD if the monster a shot has reached him
+ * and he died.
  */
-static void _Monster_anim_shots(Monster* self) {
-    
+static Error _Monster_anim_shots(Monster* self) {
+    return 0;
 }
 
-static void _Monster_move(Monster* self) {
-    if (self->target_waypoint == ArrayList_get_length(&self->path->waypoints)) {
-        self->target_waypoint = 0;
-        _Monster_set_next_traj(self);
-    }
+/**
+ * @brief Move the monster on its path.
+ * 
+ * @param self Monster to move
+ * @return Error INFO_MONSTER_BACK_TO_SPAWN if the monster
+ * has reached the end of the path and is back to spawn.
+ */
+static Error _Monster_move(Monster* self) {
+    Error err = 0;
 
-    if (Traject_is_over(
-        &self->traj,
-        Grid_get_absolute_coords_C(
-            self->grid,
-            ArrayList_get_v(&self->path->waypoints, self->target_waypoint, Point)
-        ))) {
+    Point next_waypoint = Grid_get_absolute_coords_C(
+        self->grid,
+        ArrayList_get_v(&self->path->waypoints, self->target_waypoint, Point)
+    );
+    
+    if (Traject_is_over(&self->traj, next_waypoint)) {
+        if (self->target_waypoint == ArrayList_get_length(&self->path->waypoints) - 1) {
+            self->target_waypoint = 0;
+            err = INFO_MONSTER_BACK_TO_SPAWN;
+        }
         _Monster_set_next_traj(self);
     }
     else {
         Traject_move(&self->traj);
     }
+
+    return err;
 }
 
-bool Monster_anim(Monster* self) {
-    if (Timer_is_over(&self->start_timer)) {
-        _Monster_anim_shots(self);
-        _Monster_move(self);
+Error Monster_anim(Monster* self) {
+    Error err = 0;
+    if (!Timer_is_over(&self->start_timer))
+        return 0;
+
+    if ((err = _Monster_anim_shots(self)) == INFO_MONSETR_IS_DEAD) {
+        return err;
+    }
+    if ((err = _Monster_move(self)) == INFO_MONSTER_BACK_TO_SPAWN) {
+        return err;
     }
 
-    return false;
+    return 0;
 }
 
 void Monster_draw(const Monster* self) {
