@@ -28,23 +28,14 @@ static void _Land_set_grid_color(Land* self) {
     for (int j = 0; j < self->grid.height; j++) {
         for (int i = 0; i < self->grid.width; i++) {
             Point current = (Point) {.x = i, .y = j};
-            Cell* cell = Grid_get_cell(
-                &self->grid, current
-            );
-            if (Land_is_path(self, current)) {
-                cell->filled_color = MLV_COLOR_GRAY50;
-            }
-            else {
-                cell->filled_color = MLV_COLOR_WHITE;
-            }
+            Cell* cell = Grid_get_cell(&self->grid, current);
+            cell->filled_color = Land_is_path(self, current) ? MLV_COLOR_GRAY50
+                                                             : MLV_COLOR_WHITE;
         }
     }
 
-    Cell* start_cell = Grid_get_cell(&self->grid, Path_get_start(&self->path));
-    Cell* end_cell   = Grid_get_cell(&self->grid, Path_get_end(&self->path));
-
-    start_cell->filled_color = MLV_COLOR_GREEN;
-    end_cell->filled_color = MLV_COLOR_RED;
+    Grid_get_cell(&self->grid, Path_get_start(&self->path))->filled_color = MLV_COLOR_GREEN;
+    Grid_get_cell(&self->grid, Path_get_end(&self->path))->filled_color = MLV_COLOR_RED;
 }
 
 Error Land_add_tower(Land* self, Tower* tower) {
