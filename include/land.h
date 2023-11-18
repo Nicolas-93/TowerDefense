@@ -6,6 +6,7 @@
 #include "tower.h"
 #include "deque.h"
 #include "monster.h"
+#include "monsterwave.h"
 #include "path.h"
 #include "timer.h"
 
@@ -20,30 +21,6 @@ typedef struct Land {
     Timer next_wave_timer;  /*< Time before next wave */
 } Land;
 
-typedef enum MonsterWaveType {
-    WAVE_NORMAL,
-    WAVE_CROWD,
-    WAVE_AGILE,
-    WAVE_BOSS
-} MonsterWaveType;
-
-typedef struct MonsterWave {
-    MonsterWaveType type;
-    int probability;
-    int size;
-    int speed;
-} MonsterWave;
-
-#define NB_MONSTER_WAVES 4
-
-extern const MonsterWave WAVES[NB_MONSTER_WAVES];
-
-#define WAVES_PROBABILITIES { \
-    [WAVE_NORMAL] = 50, \
-    [WAVE_CROWD] = 20, \
-    [WAVE_AGILE] = 20, \
-    [WAVE_BOSS] = 10, \
-}
 
 /**
  * @brief Create a new Land object, with a given width and height.

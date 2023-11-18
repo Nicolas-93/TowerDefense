@@ -1,34 +1,6 @@
 #include "land.h"
-#include "deque.h"
 #include "utils.h"
 #include <assert.h>
-
-const MonsterWave WAVES[NB_MONSTER_WAVES] = {
-    [WAVE_NORMAL] = {
-        .type = WAVE_NORMAL,
-        .probability = 50,
-        .size = 12,
-        .speed = 1,
-    },
-    [WAVE_CROWD] = {
-        .type = WAVE_CROWD,
-        .probability = 20,
-        .size = 24,
-        .speed = 1,
-    },
-    [WAVE_AGILE] = {
-        .type = WAVE_AGILE,
-        .probability = 20,
-        .size = 12,
-        .speed = 2,
-    },
-    [WAVE_BOSS] = {
-        .type = WAVE_BOSS,
-        .probability = 10,
-        .size = 2,
-        .speed = 1,
-    },
-};
 
 static void _Land_set_grid_color(Land* self);
 
@@ -114,15 +86,9 @@ void Land_new_monster_wave(Land* self, MonsterWave wave) {
 }
 
 void Land_new_random_monster_wave(Land* self) {
-    MonsterWaveType wave;
-
-    do {
-        static const int probabilities[NB_MONSTER_WAVES] = WAVES_PROBABILITIES;
-        wave = weighted_selection(NB_MONSTER_WAVES, probabilities);
-    } while (self->wave_counter < 5 && wave == WAVE_BOSS);
-
-    self->wave_counter++;
-    Land_new_monster_wave(self, WAVES[wave]);
+    MonsterWave wave = MonsterWave_new_random(self->wave_counter);
+    MonsterWave_print(wave);
+    Land_new_monster_wave(self, wave);
 }
 
 bool Land_is_path(const Land* self, Point p) {
