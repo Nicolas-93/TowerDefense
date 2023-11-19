@@ -1,6 +1,6 @@
 #include <MLV/MLV_all.h>
 #include <stdbool.h>
-#include <time.h>
+#include "timer.h"
 #include "grid.h"
 #include "args.h"
 #include "land.h"
@@ -10,15 +10,22 @@ static Args ARGS = {
     .win = {
         .width = 500,
         .height = 400,
+        .fullscreen = false,
         .fps = 60,
     }
 };
 
 int main(int argc, char const *argv[]) {
 
+    if (ARGS.win.fullscreen) {
+        ARGS.win.width = MLV_get_desktop_width();
+        ARGS.win.height = MLV_get_desktop_height();
+    }
+
     MLV_create_window("", "", ARGS.win.width, ARGS.win.height);
     MLV_change_frame_rate(ARGS.win.fps);
-    Image_load_all();
+    Clock_update();
+    // Image_load_all();
 
     Grid window_grid;
     Land land;
@@ -35,6 +42,7 @@ int main(int argc, char const *argv[]) {
     Path_print(&land.path);
 
     while (true) {
+        Clock_update();
         MLV_clear_window(MLV_COLOR_GRAY50);
         Land_anim(&land);
 

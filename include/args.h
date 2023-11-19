@@ -5,6 +5,7 @@ typedef struct Args {
     struct {
         int width;
         int height;
+        bool fullscreen;
         int fps;
     } win;
 } Args;

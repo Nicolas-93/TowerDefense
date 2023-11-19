@@ -6,9 +6,24 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 typedef struct Timer {
     struct timespec future;
 } Timer;
+
+typedef struct Clock {
+    struct timespec current;
+} Clock;
+
+/**
+ * @brief Update the current clock (static variable CURRENT_CLOCK).
+ * This function should be called once to initialize the clock,
+ * and then at the beginning of each frame.
+ * This is to avoid calling clock_gettime() multiple times per frame,
+ * and desynchronize timers.
+ * 
+ */
+void Clock_update(void);
 
 /**
  * @brief Create a new Timer object.

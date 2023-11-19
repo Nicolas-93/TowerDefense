@@ -1,4 +1,5 @@
 #include "monsterwave.h"
+#include "utils.h"
 #include <assert.h>
 #include <stdio.h>
 

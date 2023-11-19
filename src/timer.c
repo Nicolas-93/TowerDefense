@@ -1,8 +1,13 @@
 #include "timer.h"
 
+static Clock CURRENT_CLOCK = {0};
+
+void Clock_update(void) {
+    clock_gettime(CLOCK_REALTIME, &CURRENT_CLOCK.current);
+}
+
 Timer Timer_new_ms(uint64_t milliseconds) {
-    struct timespec now;
-    clock_gettime(CLOCK_REALTIME, &now);
+    struct timespec now = CURRENT_CLOCK.current;
 
     return (Timer) {
         .future = {
@@ -13,15 +18,15 @@ Timer Timer_new_ms(uint64_t milliseconds) {
 }
 
 bool Timer_is_over(const Timer* self) {
-    struct timespec now;
-    clock_gettime(CLOCK_REALTIME, &now);
+    struct timespec now = CURRENT_CLOCK.current;
+
     return (now.tv_sec == self->future.tv_sec ? now.tv_nsec >= self->future.tv_nsec :
                                                 now.tv_sec > self->future.tv_sec);
 }
 
 int64_t Timer_get_difference(const Timer* self) {
-    struct timespec now;
-    clock_gettime(CLOCK_REALTIME, &now);
+    struct timespec now = CURRENT_CLOCK.current;
+
     return (
         (self->future.tv_sec - now.tv_sec)   * 1e3 +
         (self->future.tv_nsec - now.tv_nsec) / 1e6

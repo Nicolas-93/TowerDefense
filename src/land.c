@@ -70,7 +70,7 @@ void Land_new_monster_wave(Land* self, MonsterWave wave) {
             H_PARAMETER,
             wave.speed,
             self->wave_counter,
-            Timer_new_ms(500 * i) // Make it a little more random : i +- rand()
+            Timer_new_ms(1000 * i) // Make it a little more random : i +- rand()
         );
         _Land_add_monster(self, &monster);
     }
