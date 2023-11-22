@@ -1,7 +1,7 @@
 #include "grid.h"
 #include "utils.h"
-#include "geom.h"
 #include <MLV/MLV_all.h>
+#include <assert.h>
 
 static int _Grid_init_cells(Grid* grid);
 
@@ -40,6 +40,48 @@ Error Grid_new(
     return 0;
 }
 
+void Grid_set_event_handler(Grid* grid, void (*callback)(Point pos, void* data), void* data) {
+    assert(callback != NULL);
+    grid->event_handler.data = data;
+    grid->event_handler.callback = callback;
+}
+
+/**
+ * @brief Convert absolute coordinates to relative grid's coordinates
+ * 
+ * @param grid Grid object
+ * @param absolute Absolute coordinates (usually mouse position)
+ * @return Point 
+ */
+static inline Point _Grid_absolute_to_relative(Grid* grid, Point absolute) {
+    return (Point) {
+        .x = (int) ((absolute.x - grid->view.ax) / grid->cell_width),
+        .y = (int) ((absolute.y - grid->view.ay) / grid->cell_height)
+    };
+}
+
+/**
+ * @brief Process click event if any and call the callback function
+ * 
+ * @param grid 
+ */
+static void _Grid_process_click_event(Grid* grid) {
+    if (!Event_is_click() || !grid->event_handler.callback)
+        return;
+
+    Event ev = Event_get();
+    if (!Rect_contains(grid->view, ev.mouse)) {
+        return;
+    }
+
+    Point pos = _Grid_absolute_to_relative(grid, ev.mouse);
+    grid->event_handler.callback(pos, grid->event_handler.data);
+}
+
+void Grid_process_event(Grid* grid) {
+    _Grid_process_click_event(grid);
+}
+
 void Grid_free(Grid* grid) {
     for (int i = 0; i < grid->width; ++i) {
         free(grid->cells[i]);
@@ -47,15 +89,15 @@ void Grid_free(Grid* grid) {
     free(grid->cells);
 }
 
-Point Grid_get_absolute_coords_TL(Grid* grid, Point cell_relative) {
+Point Grid_get_absolute_coords_TL(const Grid* grid, Point cell_relative) {
     return grid->cells[(int) cell_relative.y][(int) cell_relative.x].pos.a;
 }
 
-Point Grid_get_absolute_coords_BR(Grid* grid, Point cell_relative) {
+Point Grid_get_absolute_coords_BR(const Grid* grid, Point cell_relative) {
     return grid->cells[(int) cell_relative.y][(int) cell_relative.x].pos.b;
 }
 
-Point Grid_get_absolute_coords_C(Grid* grid, Point cell_relative) {
+Point Grid_get_absolute_coords_C(const Grid* grid, Point cell_relative) {
     Point TL = Grid_get_absolute_coords_TL(grid, cell_relative);
     return (Point) {
         .x = TL.x + grid->cell_width / 2,
@@ -166,10 +208,15 @@ void Grid_draw_filled_rects(const Grid* grid) {
     }
 }
 
-Cell* Grid_get_cell(Grid* grid, Point cell_relative) {
-    if (cell_relative.x < 0 || cell_relative.x >= grid->width
-        || cell_relative.y < 0 || cell_relative.y >= grid->height) {
+Cell* Grid_get_cell(const Grid* grid, Point cell_relative) {
+    if (!Rect_contains((Rect) {
+            .a = {0, 0},
+            .b = {grid->width, grid->height}
+        },
+        cell_relative
+    )) {
         return NULL;
     }
+
     return &grid->cells[(int) cell_relative.y][(int) cell_relative.x];
 }

@@ -4,6 +4,11 @@
 
 static void _Land_set_grid_color(Land* self);
 
+static void _Land_on_grid_click(Point pos, void* data) {
+    Land* land = data;
+    fprintf(stderr, "Grid event at (%f, %f)\n", pos.x, pos.y);
+}
+
 Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height) {
     *self = (Land) {
         .wave_counter = 0,
@@ -18,6 +23,7 @@ Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height) {
         parent, (Rect) {.ax = 0, .ay = 0, .bx = 7, .by = parent->height - 1},
         true, MLV_COLOR_WHITE, MLV_COLOR_BLACK
     );
+    Grid_set_event_handler(&self->grid, _Land_on_grid_click, self);
     _Land_set_grid_color(self);
     Land_new_random_monster_wave(self);
 
@@ -98,6 +104,10 @@ bool Land_is_tower(const Land* self, Point p) {
 
 bool Land_is_occupied(const Land* self, Point p) {
     return Land_is_path(self, p) || Land_is_tower(self, p);
+}
+
+void Land_process_event(Land* self) {
+    Grid_process_event(&self->grid);
 }
 
 void Land_anim(Land* self) {

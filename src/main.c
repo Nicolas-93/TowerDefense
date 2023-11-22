@@ -5,6 +5,7 @@
 #include "args.h"
 #include "land.h"
 #include "image.h"
+#include "event.h"
 
 static Args ARGS = {
     .win = {
@@ -43,7 +44,10 @@ int main(int argc, char const *argv[]) {
 
     while (true) {
         Clock_update();
+        Event_pop_event();
         MLV_clear_window(MLV_COLOR_GRAY50);
+        Land_process_event(&land);
+
         Land_anim(&land);
 
         Land_draw(&land);

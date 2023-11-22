@@ -77,4 +77,6 @@ double Vector2D_dist(Point a, Point b);
 
 double Vector2D_dot(Vector2D v1, Vector2D v2);
 
+bool Rect_contains(Rect rect, Point p);
+
 #endif

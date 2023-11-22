@@ -9,6 +9,7 @@
 #include "monsterwave.h"
 #include "path.h"
 #include "timer.h"
+#include "event.h"
 
 #define H_PARAMETER 1
 
@@ -107,5 +108,12 @@ void Land_draw(const Land* self);
  * @param self 
  */
 void Land_free(Land* self);
+
+/**
+ * @brief Land event handler
+ * 
+ * @param self Land object
+ */
+void Land_process_event(Land* self);
 
 #endif

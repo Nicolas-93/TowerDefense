@@ -3,6 +3,7 @@
 
 #include "geom.h"
 #include "error.h"
+#include "event.h"
 #include <MLV/MLV_all.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -24,6 +25,10 @@ typedef struct {
     MLV_Color border_color;
     MLV_Color filled_color;
     Cell** cells;
+    struct {
+        void (*callback)(Point pos, void* data);
+        void* data;
+    } event_handler;
 } Grid;
 
 /**
@@ -52,6 +57,25 @@ Error Grid_new(
     MLV_Color filled_color, MLV_Color color_border);
 
 /**
+ * @brief Set grid's event handler
+ * Called when a click event occurs on the grid
+ * 
+ * @param grid Grid object
+ * @param callback Callback function taking the clicked cell's position
+ * and a pointer to data.
+ * @param data Pointer to data to pass to the callback function
+ */
+void Grid_set_event_handler(Grid* grid, void (*callback)(Point pos, void* data), void* data);
+
+/**
+ * @brief Process grid event if any and call the callback function
+ * Refreshes the hovered cell's color
+ * 
+ * @param grid 
+ */
+void Grid_process_event(Grid* grid);
+
+/**
  * @brief Free grid
  * 
  * @param grid 
@@ -65,7 +89,7 @@ void Grid_free(Grid* grid);
  * @param cell_relative 
  * @return Point 
  */
-Point Grid_get_absolute_coords_TL(Grid* grid, Point cell_relative);
+Point Grid_get_absolute_coords_TL(const Grid* grid, Point cell_relative);
 
 
 /**
@@ -75,7 +99,7 @@ Point Grid_get_absolute_coords_TL(Grid* grid, Point cell_relative);
  * @param cell_relative 
  * @return Point 
  */
-Point Grid_get_absolute_coords_BR(Grid* grid, Point cell_relative);
+Point Grid_get_absolute_coords_BR(const Grid* grid, Point cell_relative);
 
 /**
  * @brief Returns absolute coordinates of a cell's center
@@ -84,7 +108,7 @@ Point Grid_get_absolute_coords_BR(Grid* grid, Point cell_relative);
  * @param cell_relative 
  * @return Point 
  */
-Point Grid_get_absolute_coords_C(Grid* grid, Point cell_relative);
+Point Grid_get_absolute_coords_C(const Grid* grid, Point cell_relative);
 
 /**
  * @brief Returns cell's address in grid
@@ -93,7 +117,7 @@ Point Grid_get_absolute_coords_C(Grid* grid, Point cell_relative);
  * @param cell_relative Cell coordinates relative to grid 
  * @return Cell* 
  */
-Cell* Grid_get_cell(Grid* grid, Point cell_relative);
+Cell* Grid_get_cell(const Grid* grid, Point cell_relative);
 
 /**
  * @brief Draw only grid's lines

@@ -84,3 +84,10 @@ bool Point_on_segment(Point cell, Point p1, Point p2) {
     }
     return false;
 }
+
+bool Rect_contains(Rect rect, Point p) {
+    return (
+        p.x >= rect.ax && p.x < rect.bx
+        && p.y >= rect.ay && p.y < rect.by
+    );
+}

@@ -1,4 +1,8 @@
+assets/
 doc/
-.gitignore
 build/
-.history/
+tmp/
+.vscode/*
+.gitignore
+TODO
+callgrind*
