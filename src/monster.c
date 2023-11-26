@@ -2,16 +2,9 @@
 #include "image.h"
 #include <math.h>
 
-static void _Monster_set_speed(Monster* self, double speed) {
-    self->traj.speed = speed * self->grid->cell_width / MLV_get_frame_rate();
-}
-
-static double _Monster_get_speed(const Monster* self) {
-    return self->traj.speed * MLV_get_frame_rate() / self->grid->cell_width;
-}
-
 static void _Monster_set_next_traj(Monster* self) {
-    self->traj = Traject_new_from_points(
+    Traject_set_from_points(
+        &self->traj,
         Grid_get_absolute_coords_C(
             self->grid,
             ArrayList_get_v(&self->path->waypoints, self->target_waypoint, Point)
@@ -19,8 +12,7 @@ static void _Monster_set_next_traj(Monster* self) {
         Grid_get_absolute_coords_C(
             self->grid,
             ArrayList_get_v(&self->path->waypoints, self->target_waypoint + 1, Point)
-        ),
-        self->traj.speed
+        )
     );
     self->target_waypoint++;
 }
@@ -44,8 +36,8 @@ void Monster_new(
         .last_gem_impact = 0,
         .timer = Timer_new_ms(0),
         .start_timer = start_timer,
+        .traj = Traject_new_without_dir_and_pos(grid->cell_width, speed),
     };
-    _Monster_set_speed(self, speed);
     _Monster_set_next_traj(self);
     Deque_init(&self->future_shots, sizeof(Shot));
 }
