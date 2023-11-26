@@ -23,6 +23,20 @@ const Axis DIRECTION_TO_AXIS[4] = {
     [DOWN]  = VERTICAL,
 };
 
+Vector2D Vector2D_new(double x, double y) {
+    return (Vector2D) {
+        .x = x,
+        .y = y
+    };
+}
+
+Vector2D Vector2D_new_from_value(double value) {
+    return (Vector2D) {
+        .x = value,
+        .y = value
+    };
+}
+
 bool Vector2D_equals(Vector2D v1, Vector2D v2) {
     return v1.x == v2.x && v1.y == v2.y;
 }

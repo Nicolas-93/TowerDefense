@@ -11,7 +11,7 @@
 #include "timer.h"
 #include "event.h"
 
-#define H_PARAMETER 1
+#define H_PARAMETER 100
 
 typedef struct Land {
     Path path;              /*< Monsters path */

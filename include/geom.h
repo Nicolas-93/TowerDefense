@@ -59,6 +59,10 @@ int Geom_manhattan_distance(Point a, Point b);
  */
 bool Point_on_segment(Point cell, Point p1, Point p2);
 
+Vector2D Vector2D_new(double x, double y);
+
+Vector2D Vector2D_new_from_value(double value);
+
 bool Vector2D_equals(Vector2D v1, Vector2D v2);
 
 Vector2D Vector2D_add(Vector2D v1, Vector2D v2);

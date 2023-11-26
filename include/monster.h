@@ -41,11 +41,20 @@ void Monster_new(
     Monster* self,
     Grid* grid,
     Path* path,
-    const int h,
+    const double h,
     float speed,
     uint16_t wave_counter,
     Timer start_timer
 );
+
+/**
+ * @brief Add a shot that will hit the monster in the future.
+ * 
+ * @param self Monster object
+ * @param shot Shot object to add
+ * @return Error 
+ */
+Error Monster_add_future_shot(Monster* self, const Shot* shot);
 
 /**
  * @brief Update the monster's and shots positions.

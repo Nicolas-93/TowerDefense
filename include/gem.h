@@ -11,7 +11,7 @@ typedef enum GemType {
 } GemType;
 
 typedef struct Gem {
-    ColorHSV color;
+    Color color;
     GemType type;
     uint8_t level;
 } Gem;

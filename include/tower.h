@@ -5,15 +5,17 @@
 #include "timer.h"
 #include "grid.h"
 #include "monster.h"
+#include "deque.h"
 
 typedef struct Tower {
-    Point pos;
-    Grid* grid;
-    bool is_empty;
-    bool is_active;
+    Point pos;              /*< Position on the grid */
+    const Grid* grid;       /*< Land's grid */
+    bool is_empty;          /*< True if the tower has no gem */
+    bool is_active;         /*< True if the tower is active (tower is sleeping 2s after a gem is placed) */
     Timer active_timer;     /*< 2 seconds to wait before the tower begin to shoot */
     Timer shoot_timer;      /*< 0.5 seconds between each shot */
     Gem gem;
+    float range;
 } Tower;
 
 /**
@@ -24,7 +26,15 @@ typedef struct Tower {
  * @param pos Position of the tower on the grid
  * @return Tower 
  */
-void Tower_new(Tower* self, Grid* grid, Point pos);
+void Tower_new(Tower* self, const Grid* grid, Point pos);
+
+/**
+ * @brief Attack the monsters with the towers.
+ * 
+ * @param self 
+ * @return Error 
+ */
+Error Tower_anim(Tower* self, Deque* monsters);
 
 /**
  * @brief Put a gem in a tower, and start a timer
@@ -34,5 +44,12 @@ void Tower_new(Tower* self, Grid* grid, Point pos);
  * @param gem 
  */
 void Tower_set_gem(Tower* self, Gem gem);
+
+/**
+ * @brief Draw the tower on the grid.
+ * 
+ * @param self 
+ */
+void Tower_draw(const Tower* self);
 
 #endif

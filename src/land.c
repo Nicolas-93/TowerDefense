@@ -5,8 +5,21 @@
 static void _Land_set_grid_color(Land* self);
 
 static void _Land_on_grid_click(Point pos, void* data) {
-    Land* land = data;
+    Land* self = (Land*) data;
     fprintf(stderr, "Grid event at (%f, %f)\n", pos.x, pos.y);
+
+    if (Land_is_occupied(self, pos)) {
+        fprintf(stderr, "Case already used\n");
+        /*
+        Si c'est une tour, et qu'il y a une gemme, il faudra pouvoir faire
+        le glisser-déposer.
+        */
+        return;
+    }
+
+    Tower tower;
+    Tower_new(&tower, &self->grid, pos);
+    Land_add_tower(self, &tower);
 }
 
 Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height) {
@@ -96,7 +109,7 @@ bool Land_is_tower(const Land* self, Point p) {
     DequeNode* entry;
 
     DEQUE_FOREACH(entry, &self->towers)
-        if (Vector2D_equals(Deque_get_elem_v(entry, Point), p))
+        if (Vector2D_equals(Deque_get_elem_v(entry, Tower).pos, p))
             return true;
     
     return false;
@@ -115,6 +128,9 @@ void Land_anim(Land* self) {
     DEQUE_FOREACH(entry, &self->monsters) {
         Monster_anim(Deque_get_elem(entry));
     }
+    DEQUE_FOREACH(entry, &self->towers) {
+        Tower_anim(Deque_get_elem(entry), &self->monsters);
+    }
 }
 
 void Land_draw(const Land* self) {
@@ -123,7 +139,10 @@ void Land_draw(const Land* self) {
     
     DequeNode* entry;
     DEQUE_FOREACH(entry, &self->monsters) {
-        Monster_draw(Deque_get_elem(entry));
+        Monster_draw((Monster*) Deque_get_elem(entry));
+    }
+    DEQUE_FOREACH(entry, &self->towers) {
+        Tower_draw((Tower*) Deque_get_elem(entry));
     }
 }
 

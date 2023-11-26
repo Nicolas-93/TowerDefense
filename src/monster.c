@@ -21,7 +21,7 @@ void Monster_new(
     Monster* self,
     Grid* grid,
     Path* path,
-    const int h,
+    const double h,
     float speed,
     uint16_t wave_counter,
     Timer start_timer
@@ -38,8 +38,14 @@ void Monster_new(
         .start_timer = start_timer,
         .traj = Traject_new_without_dir_and_pos(grid->cell_width, speed),
     };
+    self->current_hp = self->initial_hp; // Should be done in the initializer list but it doesn't work
+
     _Monster_set_next_traj(self);
     Deque_init(&self->future_shots, sizeof(Shot));
+}
+
+Error Monster_add_future_shot(Monster* self, const Shot* shot) {
+    return Deque_append(&self->future_shots, shot);
 }
 
 /**
@@ -60,11 +66,24 @@ static bool _Monster_suffer_damages(Monster* self, const Shot* shot) {
  * 
  * @param self 
  * @param gem 
- * @return INFO_MONSTER_IS_DEAD if the monster a shot has reached him
+ * @return INFO_MONSTER_IS_DEAD if a shot has reached him
  * and he died.
  */
 static Error _Monster_anim_shots(Monster* self) {
-    return 0;
+    Error err = 0;
+    DequeNode* entry, *tmp;
+    DEQUE_FOREACH_SAFE(entry, &self->future_shots, tmp) {
+        Shot* shot = Deque_get_elem(entry);
+        Shot_anim(shot);
+        if (Shot_has_reached_target(shot)) {
+            if (_Monster_suffer_damages(self, shot)) {
+                err = INFO_MONSETR_IS_DEAD;
+                break;
+            }
+            Deque_remove(&self->future_shots, entry);
+        }
+    }
+    return err;
 }
 
 /**
@@ -128,4 +147,11 @@ void Monster_draw(const Monster* self) {
         self->grid->cell_width / 2,
         self->color.mlvrgb
     );
+
+    // Draw incomming shots
+    DequeNode* entry;
+    DEQUE_FOREACH(entry, &self->future_shots) {
+        Shot* shot = Deque_get_elem(entry);
+        Shot_draw(shot);
+    }
 }
