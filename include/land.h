@@ -93,7 +93,7 @@ bool Land_is_occupied(const Land* self, Point p);
  * 
  * @param self 
  */
-void Land_anim(Land* self);
+void Land_update(Land* self);
 
 /**
  * @brief Draw the land

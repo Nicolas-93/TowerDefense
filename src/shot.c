@@ -29,7 +29,7 @@ bool Shot_has_reached_target(const Shot* shot) {
     return Traject_is_over(&shot->traj, *shot->target);
 }
 
-void Shot_anim(Shot* self) {
+void Shot_update(Shot* self) {
     Traject_pursuit(&self->traj, *self->target);
     Traject_move(&self->traj);
 }

@@ -8,6 +8,11 @@ typedef struct {
     double y;
 } Vector2D, Point;
 
+typedef struct Size {
+    double width;
+    double height;
+} Size;
+
 typedef union {
     struct {
         Point a;
@@ -22,10 +27,10 @@ typedef union {
 } Rect;
 
 typedef enum Direction {
-    UP = 0,
-    DOWN,
-    RIGHT,
-    LEFT,
+    UP      = 0,
+    DOWN    = 1,
+    RIGHT   = 2,
+    LEFT    = 3,
 } Direction;
 
 typedef enum Axis {

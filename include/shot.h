@@ -51,6 +51,6 @@ bool Shot_has_reached_target(const Shot* shot);
  * 
  * @param shot Shot to update.
  */
-void Shot_anim(Shot* shot);
+void Shot_update(Shot* shot);
 
 #endif

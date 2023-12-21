@@ -85,7 +85,7 @@ static Error _Tower_attack(Tower* self, Deque* monsters) {
  * @param monsters Monsters to attack
  * @return Error 0
  */
-Error Tower_anim(Tower* self, Deque* monsters) {
+Error Tower_update(Tower* self, Deque* monsters) {
     if (self->is_empty) {
         return 0;
     }

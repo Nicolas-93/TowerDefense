@@ -34,7 +34,7 @@ void Tower_new(Tower* self, const Grid* grid, Point pos);
  * @param self 
  * @return Error 
  */
-Error Tower_anim(Tower* self, Deque* monsters);
+Error Tower_update(Tower* self, Deque* monsters);
 
 /**
  * @brief Put a gem in a tower, and start a timer

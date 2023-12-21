@@ -74,7 +74,7 @@ static Error _Monster_anim_shots(Monster* self) {
     DequeNode* entry, *tmp;
     DEQUE_FOREACH_SAFE(entry, &self->future_shots, tmp) {
         Shot* shot = Deque_get_elem(entry);
-        Shot_anim(shot);
+        Shot_update(shot);
         if (Shot_has_reached_target(shot)) {
             if (_Monster_suffer_damages(self, shot)) {
                 err = INFO_MONSETR_IS_DEAD;
@@ -115,7 +115,7 @@ static Error _Monster_move(Monster* self) {
     return err;
 }
 
-Error Monster_anim(Monster* self) {
+Error Monster_update(Monster* self) {
     Error err = 0;
     if (!Timer_is_over(&self->start_timer))
         return 0;

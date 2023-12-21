@@ -123,13 +123,13 @@ void Land_process_event(Land* self) {
     Grid_process_event(&self->grid);
 }
 
-void Land_anim(Land* self) {
+void Land_update(Land* self) {
     DequeNode* entry;
     DEQUE_FOREACH(entry, &self->monsters) {
-        Monster_anim(Deque_get_elem(entry));
+        Monster_update(Deque_get_elem(entry));
     }
     DEQUE_FOREACH(entry, &self->towers) {
-        Tower_anim(Deque_get_elem(entry), &self->monsters);
+        Tower_update(Deque_get_elem(entry), &self->monsters);
     }
 }
 

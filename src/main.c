@@ -6,52 +6,43 @@
 #include "land.h"
 #include "image.h"
 #include "event.h"
+#include "game.h"
 
-static Args ARGS = {
+Args ARGS = {
     .win = {
-        .width = 500,
-        .height = 400,
-        .fullscreen = false,
+        .size = {500, 400},
+        .fullscreen = true,
         .fps = 60,
-    }
+    },
 };
 
 int main(int argc, char const *argv[]) {
 
     if (ARGS.win.fullscreen) {
-        ARGS.win.width = MLV_get_desktop_width();
-        ARGS.win.height = MLV_get_desktop_height();
+        ARGS.win.size.width = MLV_get_desktop_width();
+        ARGS.win.size.height = MLV_get_desktop_height();
     }
+    int seed = time(NULL);
+    srand(seed);
+    fprintf(stderr, "seed=%d\n", seed);
 
-    MLV_create_window("", "", ARGS.win.width, ARGS.win.height);
+    MLV_create_window("", "", ARGS.win.size.width, ARGS.win.size.height);
     MLV_change_frame_rate(ARGS.win.fps);
     Clock_update();
     // Image_load_all();
 
-    Grid window_grid;
-    Land land;
-
-    Grid_new(
-        &window_grid, 10, 6, 0.95,
-        NULL,
-        (Rect) {.ax = 0, .ay = 0, .bx = ARGS.win.width, .by = ARGS.win.height},
-        false,
-        MLV_COLOR_WHITE, MLV_COLOR_RED
-    );
-
-    Land_new(&land, &window_grid, 28, 22);
-    Path_print(&land.path);
+    Game game;
+    Game_new(&game, ARGS.win.size);
 
     while (true) {
         Clock_update();
         Event_pop_event();
         MLV_clear_window(MLV_COLOR_GRAY50);
-        Land_process_event(&land);
+        Game_process_event(&game);
 
-        Land_anim(&land);
+        Game_update(&game);
 
-        Land_draw(&land);
-        // Grid_draw_lines(&window_grid);
+        Game_draw(&game);
         MLV_update_window();
 
         MLV_delay_according_to_frame_rate();

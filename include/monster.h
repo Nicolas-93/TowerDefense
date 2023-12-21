@@ -67,7 +67,7 @@ Error Monster_add_future_shot(Monster* self, const Shot* shot);
  * INFO_MONSTER_IS_DEAD if the monster a shot has reached him
  * and he died.
  */
-Error Monster_anim(Monster* self);
+Error Monster_update(Monster* self);
 
 /**
  * @brief Draw the monster.
