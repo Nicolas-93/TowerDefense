@@ -1,4 +1,20 @@
 #include "game.h"
+#include "dragndrop.h"
+
+bool Game_on_gem_release(
+    void* context, void* object,
+    Point abs_pos
+) {
+    Game* game = (Game*) context;
+    Gem* gem = (Gem*) object;
+    
+    if (Land_on_gem_release(&game->land, gem, abs_pos))
+        return true;
+    else if (Inventory_on_gem_release(&game->inv, gem, abs_pos))
+        return true;
+
+    return false;
+}
 
 Error Game_new(Game* self, Size win_size) {
     Error err = 0;
@@ -13,13 +29,16 @@ Error Game_new(Game* self, Size win_size) {
         return err;
     }
 
-    if ((err = Land_new(&self->land, &self->viewport, 28, 22)) < 0) {
+    if ((err = Land_new(&self->land, &self->viewport, self, 28, 22)) < 0) {
         return err;
     }
-
     Path_print(&self->land.path);
 
-    // Inventory_new(&self->inv, 3, 12);
+    if ((err = Inventory_new(
+        &self->inv, &self->viewport, self, (Size) {.width = 3, .height = 12}
+    ) < 0)) {
+        return err;
+    }
 
     return 0;
 }
@@ -30,9 +49,13 @@ void Game_update(Game* self) {
 
 void Game_draw(const Game* self) {
     Land_draw(&self->land);
+    Inventory_draw(&self->inv);
+    DragNDrop_draw();
     // Grid_draw_lines(&self.viewport);
 }
 
 void Game_process_event(Game* self) {
+    DragNDrop_process_event();
+    Inventory_process_event(&self->inv);
     Land_process_event(&self->land);
 }

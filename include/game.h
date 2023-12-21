@@ -40,5 +40,18 @@ void Game_draw(const Game* self);
  */
 void Game_process_event(Game* self);
 
+/**
+ * @brief Callback for when a gem is released
+ * 
+ * @param context Game object
+ * @param object Gem object
+ * @param abs_pos Release location
+ * @return true 
+ * @return false 
+ */
+bool Game_on_gem_release(
+    void* context, void* object,
+    Point abs_pos
+);
 
 #endif

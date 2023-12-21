@@ -1,8 +1,43 @@
 #include "land.h"
 #include "utils.h"
 #include <assert.h>
+#include "dragndrop.h"
+#include "game.h"
 
 static void _Land_set_grid_color(Land* self);
+
+static Tower* Land_get_tower(const Land* self, Point p);
+
+bool Land_on_gem_release(
+    void* context, void* object,
+    Point abs_pos
+) {
+    Land* land = (Land*) context;
+    Gem* gem = (Gem*) object;
+    Tower* tower;
+    Point pos;
+
+    if (!Grid_absolute_pos_to_relative(&land->grid, abs_pos, &pos))
+        return false;
+
+    if ((tower = Land_get_tower(land, pos)) != NULL) {
+        if (!Tower_is_empty(tower))
+            return false;
+
+        Tower_set_gem(tower, gem);
+        Gem_set_grid(gem, &land->grid);
+        return true;
+    }
+
+    return false;
+}
+
+static void _Land_on_gem_release_failure(
+    void* context, void* object,
+    Point origin
+) {
+    Land_on_gem_release((Land*) context, (Gem*) object, origin);
+}
 
 static void _Land_on_grid_click(Point pos, void* data) {
     Land* self = (Land*) data;
@@ -10,21 +45,30 @@ static void _Land_on_grid_click(Point pos, void* data) {
 
     if (Land_is_occupied(self, pos)) {
         fprintf(stderr, "Case already used\n");
-        /*
-        Si c'est une tour, et qu'il y a une gemme, il faudra pouvoir faire
-        le glisser-déposer.
-        */
-        return;
-    }
+        Tower* tower;
 
-    Tower tower;
-    Tower_new(&tower, &self->grid, pos);
-    Land_add_tower(self, &tower);
+        if ((tower = Land_get_tower(self, pos)) != NULL && Tower_has_gem(tower)) {
+            DragNDrop_put(
+                Tower_pop_gem(tower),
+                Gem_draw_dragndrop,
+                self->game,
+                Game_on_gem_release,
+                self,
+                _Land_on_gem_release_failure
+            );
+        }
+    }
+    else {
+        Tower tower;
+        Tower_new(&tower, &self->grid, pos);
+        Land_add_tower(self, &tower);
+    }
 }
 
-Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height) {
+Error Land_new(Land* self, Grid* parent, void* game, uint16_t width, uint16_t height) {
     *self = (Land) {
         .wave_counter = 0,
+        .game = game,
     };
 
     Deque_init(&self->monsters, sizeof(Monster));
@@ -60,9 +104,20 @@ static void _Land_set_grid_color(Land* self) {
 Error Land_add_tower(Land* self, Tower* tower) {
     assert(tower);
 
+    static int tmp = 0;
+
     if (Land_is_occupied(self, tower->pos)) {
         return ERR_CASE_ALREADY_USED;
     }
+
+    // TODO: Remove this
+    if (tmp % 3 == 0) {
+        Gem* gem = malloc(sizeof(Gem));
+        Gem_new(gem, &self->grid, 1);
+        Tower_set_gem(tower, gem);
+    }
+    tmp++;
+
 
     Deque_append(&self->towers, tower);
 
@@ -106,13 +161,24 @@ bool Land_is_path(const Land* self, Point p) {
 }
 
 bool Land_is_tower(const Land* self, Point p) {
+    return Land_get_tower(self, p) != NULL;
+}
+
+/**
+ * @brief Get the tower object at position ``p``.
+ * 
+ * @param self Land object
+ * @param p Position of the tower relative to the grid
+ * @return Tower* Found tower or NULL if none
+ */
+static Tower* Land_get_tower(const Land* self, Point p) {
     DequeNode* entry;
 
     DEQUE_FOREACH(entry, &self->towers)
         if (Vector2D_equals(Deque_get_elem_v(entry, Tower).pos, p))
-            return true;
+            return (Tower*) Deque_get_elem(entry);
     
-    return false;
+    return NULL;
 }
 
 bool Land_is_occupied(const Land* self, Point p) {

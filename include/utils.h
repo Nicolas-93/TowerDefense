@@ -2,6 +2,13 @@
 #define UTILS_H
 
 /**
+ * @brief Cast a 1D array into a 2D VLA
+ * This method avoid to create getters and setters,
+ * in order to access an array as a 2D array.
+ */
+#define DECLARE_2D_VLA(name, typename, arr_ptr, width) \
+    typename (*name)[width] = (typename (*)[width]) arr_ptr;
+/**
  * @brief clamp a value between a min and a max
  * 
  */

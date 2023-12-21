@@ -21,6 +21,12 @@ Event Event_get(void) {
     return EV;
 }
 
-bool Event_is_click(void) {
-    return EV.type == MLV_MOUSE_BUTTON && EV.state == MLV_PRESSED;
+bool Event_is_pressed_click(void) {
+    Event ev = Event_get();
+    return ev.type == MLV_MOUSE_BUTTON && ev.state == MLV_PRESSED;
+}
+
+bool Event_is_released_click(void) {
+    Event ev = Event_get();
+    return ev.type == MLV_MOUSE_BUTTON && ev.state == MLV_RELEASED;
 }

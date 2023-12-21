@@ -133,4 +133,17 @@ void Grid_draw_lines(const Grid* grid);
  */
 void Grid_draw_filled_rects(const Grid* grid);
 
+/**
+ * @brief Get the position on the grid
+ * of absolute coordinates ``abs_pos``.
+ * 
+ * @param grid Grid object
+ * @param abs_pos Absolute coordinates
+ * @param rel_pos Address to store the
+ * relative position
+ * @return true if the point is inside the grid
+ * @return false if the point is outside the grid
+ */
+bool Grid_absolute_pos_to_relative(const Grid* grid, Point abs_pos, Point* rel_pos);
+
 #endif

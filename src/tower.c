@@ -14,17 +14,29 @@ void Tower_new(Tower* self, const Grid* grid, Point pos) {
         .grid = grid,
         .active_timer = Timer_new_ms(2000),
         .shoot_timer = Timer_new_ms(500),
-        .is_empty = false,
         .pos = pos,
         .is_active = false,
         .range = 3 * grid->cell_width,
     };
 }
 
-void Tower_set_gem(Tower* self, Gem gem) {
+void Tower_set_gem(Tower* self, Gem* gem) {
     self->gem = gem;
-    self->is_empty = false;
     self->active_timer = Timer_new_ms(2000);
+}
+
+Gem* Tower_pop_gem(Tower* self) {
+    Gem* gem = self->gem;
+    self->gem = NULL;
+    return gem;
+}
+
+bool Tower_has_gem(const Tower* self) {
+    return !! self->gem;
+}
+
+bool Tower_is_empty(const Tower* self) {
+    return !Tower_has_gem(self);
 }
 
 /**
@@ -71,7 +83,7 @@ static Error _Tower_attack(Tower* self, Deque* monsters) {
         return INFO_NO_MONSTER_IN_RANGE;
     }
     Shot shot;
-    Shot_new(&shot, self->grid, Tower_get_abs_pos(self), &target->traj.pos, self->gem);
+    Shot_new(&shot, self->grid, Tower_get_abs_pos(self), &target->traj.pos, *self->gem);
     Monster_add_future_shot(target, &shot);
 
     return INFO_MONSTER_TARGETED;
@@ -86,7 +98,7 @@ static Error _Tower_attack(Tower* self, Deque* monsters) {
  * @return Error 0
  */
 Error Tower_update(Tower* self, Deque* monsters) {
-    if (self->is_empty) {
+    if (Tower_is_empty(self)) {
         return 0;
     }
 
@@ -122,10 +134,14 @@ void Tower_draw(const Tower* self) {
     );
 
     // Draw a circle around the tower showing its range
-    Point pos = Tower_get_abs_pos(self);
+    Point abs_pos = Tower_get_abs_pos(self);
     MLV_draw_circle(
-        pos.x, pos.y,
+        abs_pos.x, abs_pos.y,
         self->range,
         MLV_rgba(255,0,0,100)
     );
+
+    if (self->gem) {
+        Gem_draw_grid(self->gem, self->pos);
+    }
 }

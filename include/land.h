@@ -20,6 +20,7 @@ typedef struct Land {
     uint16_t wave_counter;  /*< Monsters waves counter */
     Grid grid;              /*< Land's grid */
     Timer next_wave_timer;  /*< Time before next wave */
+    void* game;             /*< Parent game context, used for dragndrop */
 } Land;
 
 
@@ -28,11 +29,12 @@ typedef struct Land {
  * 
  * @param self 
  * @param parent Parent grid
+ * @param game Parent game object
  * @param width 
  * @param height 
  * @return Error 
  */
-Error Land_new(Land* self, Grid* parent, uint16_t width, uint16_t height);
+Error Land_new(Land* self, Grid* parent, void* game, uint16_t width, uint16_t height);
 
 /**
  * @brief Add a tower to the land
@@ -109,11 +111,22 @@ void Land_draw(const Land* self);
  */
 void Land_free(Land* self);
 
-/**
+/**Inventory_on_gem_release
  * @brief Land event handler
  * 
  * @param self Land object
  */
 void Land_process_event(Land* self);
+
+/**
+ * @brief Callback for when a gem is released
+ * 
+ * @param context 
+ * @param object 
+ * @param abs_pos 
+ * @return true
+ * @return false
+ */
+bool Land_on_gem_release(void* context, void* object, Point abs_pos);
 
 #endif

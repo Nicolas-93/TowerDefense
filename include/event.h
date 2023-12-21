@@ -22,7 +22,15 @@ typedef struct _Event {
  * @return true 
  * @return false 
  */
-bool Event_is_click(void);
+bool Event_is_pressed_click(void);
+
+/**
+ * @brief Check if it's a mouse release event
+ * 
+ * @return true 
+ * @return false 
+ */
+bool Event_is_released_click(void);
 
 /**
  * @brief Pop an event from the event queue and

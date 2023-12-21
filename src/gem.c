@@ -1,6 +1,7 @@
 #include "gem.h"
+#include <assert.h>
 
-void Gem_new(Gem* self, int level) {
+void Gem_new(Gem* self, Grid* grid, int level) {
     Color color = Color_new_random();
     GemType type = 0;
     
@@ -18,6 +19,7 @@ void Gem_new(Gem* self, int level) {
         .color = color,
         .type = type,
         .level = level,
+        .grid = grid,
     };
 }
 
@@ -32,4 +34,23 @@ void Gem_merge(Gem* self, Gem* other) {
 
     self->color.hsv = new_color;
     self->level++;
+}
+
+void Gem_draw_grid(Gem* self, Point pos_rel) {
+    Point pos_abs = Grid_get_absolute_coords_C(self->grid, pos_rel);
+    Gem_draw_dragndrop(self, pos_abs);
+}
+
+void Gem_draw_dragndrop(void* self, Point pos_abs) {
+    Gem* gem = (Gem*) self;
+
+    MLV_draw_filled_circle(
+        pos_abs.x, pos_abs.y,
+        gem->grid->cell_width / 3,
+        gem->color.mlvrgb
+    );
+}
+
+void Gem_set_grid(Gem* self, Grid* grid) {
+    self->grid = grid;
 }

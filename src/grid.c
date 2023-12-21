@@ -53,11 +53,21 @@ void Grid_set_event_handler(Grid* grid, void (*callback)(Point pos, void* data),
  * @param absolute Absolute coordinates (usually mouse position)
  * @return Point 
  */
-static inline Point _Grid_absolute_to_relative(Grid* grid, Point absolute) {
+static inline Point _Grid_absolute_to_relative(const Grid* grid, Point absolute) {
     return (Point) {
         .x = (int) ((absolute.x - grid->view.ax) / grid->cell_width),
         .y = (int) ((absolute.y - grid->view.ay) / grid->cell_height)
     };
+}
+
+bool Grid_absolute_pos_to_relative(const Grid* grid, Point abs_pos, Point* rel_pos) {
+
+    if (!Rect_contains(grid->view, abs_pos)) {
+        return false;
+    }
+
+    *rel_pos = _Grid_absolute_to_relative(grid, abs_pos);
+    return true;
 }
 
 /**
@@ -66,15 +76,14 @@ static inline Point _Grid_absolute_to_relative(Grid* grid, Point absolute) {
  * @param grid 
  */
 static void _Grid_process_click_event(Grid* grid) {
-    if (!Event_is_click() || !grid->event_handler.callback)
+    if (!Event_is_pressed_click() || !grid->event_handler.callback)
         return;
 
+    Point pos;
     Event ev = Event_get();
-    if (!Rect_contains(grid->view, ev.mouse)) {
+    if (!Grid_absolute_pos_to_relative(grid, ev.mouse, &pos))
         return;
-    }
 
-    Point pos = _Grid_absolute_to_relative(grid, ev.mouse);
     grid->event_handler.callback(pos, grid->event_handler.data);
 }
 
