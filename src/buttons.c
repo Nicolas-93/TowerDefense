@@ -25,13 +25,17 @@ static void _Buttons_on_grid_click(Point pos, void* context) {
     }
 }
 
-Error Buttons_new(Buttons* self, Grid* parent, Rect rect, Button buttons[], int nb_buttons) {
+Error Buttons_new(Buttons* self, Grid* parent, Rect rect, Size grid_size, Button buttons[], int nb_buttons) {
     *self = (Buttons) {
         .buttons = buttons,
         .nb_buttons = nb_buttons,
     };
 
-    if (Grid_new(&self->grid, 3, 2, 0.8, parent, rect, true, MLV_COLOR_WHITE, MLV_COLOR_BLACK) < 0) {
+    if (Grid_new(
+        &self->grid,
+        grid_size.width, grid_size.height, 0.8, parent, rect,
+        true, MLV_COLOR_WHITE, MLV_COLOR_BLACK) < 0
+    ) {
         return ERR_ALLOC;
     }
     Grid_set_event_handler(&self->grid, _Buttons_on_grid_click, self);

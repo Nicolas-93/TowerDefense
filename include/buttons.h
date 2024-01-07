@@ -30,7 +30,7 @@ typedef struct Buttons {
  * @param nb_buttons Number of buttons
  * @return Error 
  */
-Error Buttons_new(Buttons* self, Grid* parent, Rect rect, Button buttons[], int nb_buttons);
+Error Buttons_new(Buttons* self, Grid* parent, Rect rect, Size grid_size, Button buttons[], int nb_buttons);
 
 /**
  * @brief Draw the Buttons

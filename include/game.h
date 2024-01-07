@@ -5,12 +5,14 @@
 #include "land.h"
 #include "inventory.h"
 #include "buttons.h"
+#include "counter.h"
 
 typedef struct Game {
     Grid viewport;
     Land land;
     Inventory inv;
     Buttons buttons;
+    Counter counter;
 } Game;
 
 /**

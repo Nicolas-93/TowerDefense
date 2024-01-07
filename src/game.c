@@ -29,7 +29,7 @@ Error Game_new(Game* self, Size win_size) {
         &self->viewport, 10, 6, 0.95,
         NULL,
         (Rect) {.ax = 0, .ay = 0, .bx = win_size.width, .by = win_size.height},
-        false,
+        true,
         MLV_COLOR_WHITE, MLV_COLOR_RED
     ) < 0)) {
         return err;
@@ -43,6 +43,14 @@ Error Game_new(Game* self, Size win_size) {
     if ((err = Inventory_new(
         &self->inv, &self->viewport, self, (Size) {.width = 3, .height = 12}
     ) < 0)) {
+        return err;
+    }
+
+    if ((err = Counter_new(
+        &self->counter, &self->viewport,
+        (Rect) {.ax = 8, .ay = 1, .bx = 9, .by = 1},
+        0, 5
+    )) < 0) {
         return err;
     }
 
@@ -74,7 +82,8 @@ Error Game_new(Game* self, Size win_size) {
     Buttons_new(
         &self->buttons,
         &self->viewport,
-        (Rect) {.ax = 8, .ay = 1, .bx = 9, .by = 1},
+        (Rect) {.ax = 8, .ay = 0, .bx = 9, .by = 0},
+        (Size) {.width = 3, .height = 2},
         buttons, 4
     );
 
@@ -89,8 +98,9 @@ void Game_draw(const Game* self) {
     Land_draw(&self->land);
     Inventory_draw(&self->inv);
     Buttons_draw(&self->buttons);
+    Counter_draw(&self->counter);
     DragNDrop_draw();
-    // Grid_draw_lines(&self->viewport);
+    Grid_draw_lines(&self->viewport);
 }
 
 void Game_process_event(Game* self) {
@@ -98,4 +108,5 @@ void Game_process_event(Game* self) {
     Inventory_process_event(&self->inv);
     Land_process_event(&self->land);
     Buttons_process_event(&self->buttons);
+    Counter_process_event(&self->counter);
 }
