@@ -45,7 +45,7 @@ void Monster_new(
 }
 
 Error Monster_add_future_shot(Monster* self, const Shot* shot) {
-    return Deque_append(&self->future_shots, shot);
+    return Deque_append(&self->future_shots, shot) == ERR_DEQUE_ALLOC ? ERR_ALLOC : 0;
 }
 
 /**

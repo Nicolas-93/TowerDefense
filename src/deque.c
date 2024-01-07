@@ -100,7 +100,9 @@ DequeError Deque_add_before(Deque* self, DequeNode* listnode, const void* elem) 
     new->_next = listnode;
     new->_prev = listnode->_prev;
 
-    listnode->_prev->_next = new;
+    if (listnode->_prev) {
+        listnode->_prev->_next = new;
+    }
     listnode->_prev = new;
 
     if (new->_prev == NULL) {
@@ -128,7 +130,9 @@ DequeError Deque_add_after(Deque *self, DequeNode* listnode, const void *elem) {
     new->_next = listnode->_next;
     new->_prev = listnode;
 
-    listnode->_next->_prev = new;
+    if (listnode->_next->_prev) {
+        listnode->_next->_prev = new;
+    }
     listnode->_next = new;
 
     if (new->_next == NULL) {

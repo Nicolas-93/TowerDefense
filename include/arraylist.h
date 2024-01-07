@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef enum ArrayListError {
     ARRAYLIST_ERR_NONE = 0,
@@ -54,11 +55,31 @@ ArrayListError ArrayList_init(
 ArrayListError ArrayList_append(ArrayList* self, void* elem);
 
 /**
+ * @brief Add element at index i if positive,
+ * len - i, if negative
+ * 
+ * @param self 
+ * @param i 
+ * @param elem 
+ * @return ArrayListError 
+ */
+ArrayListError ArrayList_insert(ArrayList* self, int64_t i, const void* elem);
+
+/**
+ * @brief Extend self ArrayList with other vector
+ * 
+ * @param self List to extend
+ * @param other List to add to self
+ * @return ArrayListError 
+ */
+ArrayListError ArrayList_extend(ArrayList* self, const ArrayList* other);
+
+/**
  * @brief Get element's address at index i if positive,
  * len - i, if negative
  * @param self ArrayList object
  * @param i index
- * @return void* 
+ * @return void* Value's address
  */
 void* ArrayList_get(const ArrayList* self, int64_t i);
 
@@ -72,11 +93,39 @@ void* ArrayList_get(const ArrayList* self, int64_t i);
 #define ArrayList_get_v(self, i, type) (*((type*) ArrayList_get(self, i)))
 
 /**
- * @brief ArrayList pop last element
+ * @brief Pop last element address
  * 
  * @param self ArrayList object
  */
 void* ArrayList_pop(ArrayList* self);
+
+/**
+ * @brief Pop last element's value
+ * 
+ * @param self ArrayList object
+ * @param type value's type
+ */
+#define ArrayList_pop_v(self, type) (*((type*) ArrayList_pop(self)))
+
+/**
+ * @brief Pop element at index i if positive,
+ * len - i, if negative
+ * 
+ * @param self ArrayList object
+ * @param i index
+ * @return void* Value's address
+ */
+void* ArrayList_pop_index(ArrayList* self, int64_t i);
+
+/**
+ * @brief Pop element's value at index i if positive,
+ * len - i, if negative
+ * 
+ * @param self ArrayList object
+ * @param i index
+ * @param type value's type
+ */
+#define ArrayList_pop_index_v(self, i, type) (*((type*) ArrayList_pop_index(self, i)))
 
 /**
  * @brief Resize vector
@@ -117,6 +166,15 @@ void ArrayList_clear(ArrayList* self);
  * @return size_t 
  */
 size_t ArrayList_get_length(const ArrayList* self);
+
+/**
+ * @brief Check if ArrayList is empty
+ * 
+ * @param self 
+ * @return true 
+ * @return false 
+ */
+bool ArrayList_is_empty(const ArrayList* self);
 
 /**
  * @brief Sort's vector

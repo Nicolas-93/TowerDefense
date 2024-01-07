@@ -1,7 +1,6 @@
 #ifndef TIMER_H
 #define TIMER_H
 #define _DEFAULT_SOURCE
-#include <unistd.h>
 #include <time.h>
 #include <stdint.h>
 #include <stdbool.h>

@@ -3,7 +3,7 @@
 static Clock CURRENT_CLOCK = {0};
 
 void Clock_update(void) {
-    clock_gettime(CLOCK_REALTIME, &CURRENT_CLOCK.current);
+    timespec_get(&CURRENT_CLOCK.current, TIME_UTC);
 }
 
 Timer Timer_new_ms(uint64_t milliseconds) {
@@ -11,7 +11,7 @@ Timer Timer_new_ms(uint64_t milliseconds) {
 
     return (Timer) {
         .future = {
-            .tv_sec = now.tv_sec + milliseconds / 1e3,
+            .tv_sec  = now.tv_sec  +  milliseconds / 1000,
             .tv_nsec = now.tv_nsec + (milliseconds % 1000) * 1e6,
         }
     };
