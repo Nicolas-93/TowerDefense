@@ -17,7 +17,7 @@ static bool _Path_case_is_outside(Path* self, Point a) {
     );
 }
 
-static bool _Path_case_is_distant(Path* self, Point origin, Direction dir) {
+static bool _Path_case_is_distant(Path* self, Point origin) {
     int x_start = origin.x - MIN_DIST;
     int x_end   = origin.x + MIN_DIST;
     int y_start = origin.y - MIN_DIST;
@@ -39,11 +39,13 @@ static bool _Path_case_is_distant(Path* self, Point origin, Direction dir) {
             if (origin.x == j && origin.y == i) {
                 continue;
             }
-            if (ArrayList_get_length(&self->waypoints) >= 2
-                && Point_on_segment(
-                        current,
-                        ArrayList_get_v(&self->waypoints, -1, Point),
-                        ArrayList_get_v(&self->waypoints, -2, Point))
+            // Ignore last path's segment
+            if (ArrayList_get_length(&self->waypoints) >= 2 &&
+                Point_on_segment(
+                    current,
+                    ArrayList_get_v(&self->waypoints, -1, Point),
+                    ArrayList_get_v(&self->waypoints, -2, Point)
+                )
             ) {
                 continue;
             }
@@ -57,10 +59,10 @@ static bool _Path_case_is_distant(Path* self, Point origin, Direction dir) {
 }
 
 static void _Path_etendues_init(Path* self, Point start, int etendues[4]) {
-    etendues[UP]    =                start.y - (2 * MIN_DIST);
-    etendues[DOWN]  = self->height - start.y - (2 * MIN_DIST);
-    etendues[RIGHT] = self->width  - start.x - (2 * MIN_DIST);
-    etendues[LEFT]  =                start.x - (2 * MIN_DIST);
+    etendues[UP]    =                start.y - MIN_BORDER;
+    etendues[DOWN]  = self->height - start.y - MIN_BORDER;
+    etendues[RIGHT] = self->width  - start.x - MIN_BORDER;
+    etendues[LEFT]  =                start.x - MIN_BORDER;
 }
 
 /**
@@ -82,7 +84,7 @@ static void _Path_etendues_axis(Path* self, Point start, Axis axe, int etendues[
             Point pos = Vector2D_add(start, vdir);
 
             !_Path_case_is_outside(self, pos)
-                && _Path_case_is_distant(self, pos, dir);
+                && _Path_case_is_distant(self, pos);
 
             pos = Vector2D_add(pos, vdir)
         ) {
@@ -119,13 +121,8 @@ static Point _Path_add_segment(Path* self, Point start, Direction dir, int seg_s
 }
 
 static Direction _Path_new_turn(Axis axis, int etendues[4]) {
-    if (axis == VERTICAL) {
-        return weighted_selection(2, etendues + UP) + UP;
-    }
-    
-    else /*if (axis == HORIZONTAL)*/ {
-        return weighted_selection(2, etendues + RIGHT) + RIGHT;
-    }
+    int offset = axis == VERTICAL ? UP : RIGHT;
+    return weighted_selection(2, etendues + offset) + offset;
 }
 
 /**
@@ -139,9 +136,6 @@ static void _Path_generate_path(Path* self) {
     int path_len = 0;
     int nb_attempts = 0;
 
-    int seed = time(NULL);
-    srand(seed);
-    fprintf(stderr, "seed=%d\n", seed);
     ArrayList_init(&self->waypoints, sizeof(Point), 20, NULL);
 
     while (nb_turns < 8 || path_len < 75) {
@@ -179,7 +173,7 @@ static void _Path_generate_path(Path* self) {
             nb_turns++;
         }
     }
-    fprintf(stderr, "path_len=%d, nb_turns=%d, seed=%d, nb_attempts=%d\n", path_len, nb_turns, seed, nb_attempts);
+    fprintf(stderr, "path_len=%d, nb_turns=%d, nb_attempts=%d\n", path_len, nb_turns, nb_attempts);
 }
 
 void Path_print(Path* self) {

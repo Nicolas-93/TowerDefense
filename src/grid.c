@@ -170,39 +170,21 @@ static Error _Grid_init_cells(Grid* grid) {
 }
 
 void Grid_draw_lines(const Grid* grid) {
-    // Draw columns
-    int i, j;
-
-    for (i = 0; i < grid->width; ++i) {
+    for (int i = 0; i <= grid->width; ++i) {
         MLV_draw_line(
-            grid->cells[0][i].pos.ax, grid->cells[0][0].pos.ay,
-            grid->cells[0][i].pos.ax, grid->cells[grid->height - 1][i].pos.by,
+            grid->view.ax + (i * grid->cell_width), grid->view.ay,
+            grid->view.ax + (i * grid->cell_width), grid->view.by,
             grid->border_color
         );
     }
-    // Draw last column
-    --i;
-    MLV_draw_line(
-            grid->cells[0][i].pos.bx, grid->cells[0][0].pos.ay,
-            grid->cells[0][i].pos.bx, grid->cells[grid->height - 1][i].pos.by,
-            grid->border_color
-    );
 
-    // Draw lines
-    for (j = 0; j < grid->height; ++j) {
+    for (int j = 0; j <= grid->height; ++j) {
         MLV_draw_line(
-            grid->cells[0][0].pos.ax, grid->cells[j][0].pos.ay,
-            grid->cells[0][grid->width - 1].pos.bx, grid->cells[j][0].pos.ay,
+            grid->view.ax, grid->view.ay + (j * grid->cell_height),
+            grid->view.bx, grid->view.ay + (j * grid->cell_height),
             grid->border_color
         );
     }
-    // Draw last line
-    --j;
-    MLV_draw_line(
-        grid->cells[0][0].pos.ax, grid->cells[j][0].pos.by,
-        grid->cells[0][grid->width - 1].pos.bx, grid->cells[j][0].pos.by,
-        grid->border_color
-    );
 }
 
 void Grid_draw_filled_rects(const Grid* grid) {

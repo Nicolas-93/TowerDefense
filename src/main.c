@@ -10,8 +10,8 @@
 
 Args ARGS = {
     .win = {
-        .size = {1000, 500},
-        .fullscreen = true,
+        .size = {800, 480},
+        .fullscreen = false,
         .fps = 120,
     },
 };
