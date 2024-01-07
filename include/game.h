@@ -4,11 +4,13 @@
 #include "grid.h"
 #include "land.h"
 #include "inventory.h"
+#include "buttons.h"
 
 typedef struct Game {
     Grid viewport;
     Land land;
     Inventory inv;
+    Buttons buttons;
 } Game;
 
 /**

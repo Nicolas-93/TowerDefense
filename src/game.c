@@ -1,5 +1,11 @@
 #include "game.h"
 #include "dragndrop.h"
+#include <stdio.h>
+
+static void Game_buy_tower(void* self) {}
+static void Game_buy_mana_pool(void* self) {}
+static void Game_buy_gem(void* self) {}
+static void Game_buy_gem_merging(void* self) {}
 
 bool Game_on_gem_release(
     void* context, void* object,
@@ -40,6 +46,38 @@ Error Game_new(Game* self, Size win_size) {
         return err;
     }
 
+    static Button buttons[4];
+    memcpy(buttons, (Button[]) {{
+            .icon = IMAGE_TOWER,
+            .callback = {
+                .func = Game_buy_tower,
+                .context = self,
+            }
+        },{ .icon = IMAGE_MANA_POOL,
+            .callback = {
+                .func = Game_buy_mana_pool,
+                .context = self,
+            }
+        },{ .icon = IMAGE_GEM_CREATE,
+            .callback = {
+                .func = Game_buy_gem,
+                .context = self,
+            }
+        },{ .icon = IMAGE_GEM_MERGING,
+            .callback = {
+                .func = Game_buy_gem_merging,
+                .context = self,
+            }
+        },
+    }, sizeof(buttons));
+    
+    Buttons_new(
+        &self->buttons,
+        &self->viewport,
+        (Rect) {.ax = 8, .ay = 1, .bx = 9, .by = 1},
+        buttons, 4
+    );
+
     return 0;
 }
 
@@ -50,12 +88,14 @@ void Game_update(Game* self) {
 void Game_draw(const Game* self) {
     Land_draw(&self->land);
     Inventory_draw(&self->inv);
+    Buttons_draw(&self->buttons);
     DragNDrop_draw();
-    // Grid_draw_lines(&self.viewport);
+    // Grid_draw_lines(&self->viewport);
 }
 
 void Game_process_event(Game* self) {
     DragNDrop_process_event();
     Inventory_process_event(&self->inv);
     Land_process_event(&self->land);
+    Buttons_process_event(&self->buttons);
 }

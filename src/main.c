@@ -10,9 +10,9 @@
 
 Args ARGS = {
     .win = {
-        .size = {500, 400},
+        .size = {1000, 500},
         .fullscreen = true,
-        .fps = 60,
+        .fps = 120,
     },
 };
 
@@ -29,7 +29,7 @@ int main(int argc, char const *argv[]) {
     MLV_create_window("", "", ARGS.win.size.width, ARGS.win.size.height);
     MLV_change_frame_rate(ARGS.win.fps);
     Clock_update();
-    // Image_load_all();
+    Image_load_all();
 
     Game game;
     Game_new(&game, ARGS.win.size);
