@@ -4,9 +4,8 @@ SRC_DIR=src
 INC_DIR=include
 INCLUDE=-I$(INC_DIR)
 LIBS=-lm -lMLV
-CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -Wall -pedantic -std=c17 -g -O0
-TP_N=3
-NOM_ZIP=TP$(TP_N)_SEBAN_Nicolas.zip
+CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -MMD -Wenum-conversion -Wall -pedantic -std=c17 -g -O0
+NOM_ZIP=SEBAN_SOUIOU_TowerDefense.zip
 EXEC=td
 CONTENU_ZIP=$(SRC_DIR) $(INC_DIR) .clang-format .clang-tidy Makefile rapport.pdf
 
@@ -20,16 +19,19 @@ OBJS=$(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
 
 all: $(BUILD_DIR)/$(EXEC)
 
+# Dépendances générées automatiquement par GCC
+-include $(wildcard $(BUILD_DIR)/*.d)
+
+# Création du répertoire build
+$(BUILD_DIR):
+	@mkdir --parents $@
+
 # Assemblage de l'exécutable final
-$(BUILD_DIR)/$(EXEC): $(OBJS)
+$(BUILD_DIR)/$(EXEC): $(OBJS) | $(BUILD_DIR)
 	$(CC) $^ -o $@ $(LIBS)
 
-# Dépendances
-
-
 # Création des fichiers objets à partir des fichiers sources
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir --parents $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@
 
 rapport: rapport.pdf
@@ -46,9 +48,11 @@ format: $(SOURCES) $(HEADERS)
 
 clean:
 	rm -f $(OBJS)
+	rm -f $(BUILD_DIR)/*.d
 
-distclean:
-	rm -rf $(BUILD_DIR)
+distclean: clean
+	rm -f $(BUILD_DIR)/$(EXEC)
+	rmdir $(BUILD_DIR)/
 	rm -f $(NOM_ZIP)
 
 zip:
