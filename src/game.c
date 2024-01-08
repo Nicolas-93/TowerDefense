@@ -1,11 +1,24 @@
 #include "game.h"
 #include "dragndrop.h"
+#include "overlay.h"
 #include <stdio.h>
 
 static void Game_buy_tower(void* self) {}
 static void Game_buy_mana_pool(void* self) {}
 static void Game_buy_gem(void* self) {}
 static void Game_buy_gem_merging(void* self) {}
+
+static void Game_buy_tower_draw_overlay(Point pos, void* self) {
+    // Game* game = (Game*) self;
+    Overlay_draw(pos, "New tower\n(cost: %d mana)", 5);
+}
+static void Game_buy_mana_pool_draw_overlay(Point pos, void* self) {
+    // Game* game = (Game*) self;
+    Overlay_draw(pos, "Upgrade mana pool\n(cost: %d mana)", 50);
+}
+static void Game_buy_gem_draw_overlay(void* self) {}
+static void Game_buy_gem_merging_draw_overlay(void* self) {}
+
 
 bool Game_on_gem_release(
     void* context, void* object,
@@ -58,22 +71,24 @@ Error Game_new(Game* self, Size win_size) {
     memcpy(buttons, (Button[]) {{
             .icon = IMAGE_TOWER,
             .callback = {
-                .func = Game_buy_tower,
+                .on_click = Game_buy_tower,
+                .on_hover = Game_buy_tower_draw_overlay,
                 .context = self,
             }
         },{ .icon = IMAGE_MANA_POOL,
             .callback = {
-                .func = Game_buy_mana_pool,
+                .on_click = Game_buy_mana_pool,
+                .on_hover = Game_buy_mana_pool_draw_overlay,
                 .context = self,
             }
         },{ .icon = IMAGE_GEM_CREATE,
             .callback = {
-                .func = Game_buy_gem,
+                .on_click = Game_buy_gem,
                 .context = self,
             }
         },{ .icon = IMAGE_GEM_MERGING,
             .callback = {
-                .func = Game_buy_gem_merging,
+                .on_click = Game_buy_gem_merging,
                 .context = self,
             }
         },

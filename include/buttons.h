@@ -9,19 +9,27 @@
 typedef struct Button {
     ImageName icon;
     struct {
-        void (*func)(void* data);
-        void* context;
+        void (*on_click)(void* data); /*< callled on button click */
+        void (*on_hover)(Point pos, void* data); /*< called on hovering, should be
+        used for drawing overlays, ``pos`` represents cell's absolute position */
+        void* context; /*< context passed to the callbacks */
     } callback;
+    bool _is_hovered;
 } Button;
 
 typedef struct Buttons {
-    Grid grid;
-    Button* buttons;
-    int nb_buttons;
+    Grid grid; /*< grid containing the buttons */
+    Button* buttons; /*< Pointer to the array of buttons statically allocated */
+    int nb_buttons; /*< Number of buttons */
 } Buttons;
 
 /**
  * @brief Initialize a Buttons object
+ * Each button have to be created in buttons array.
+ * A button is a struct containing an icon and two callbacks with a context.
+ * The first callback is called when the button is clicked.
+ * The second callback is called when the button is hovered,
+ * it is called by Buttons_draw, and should be used to draw overlays.
  * 
  * @param self Buttons object
  * @param parent Parent grid
@@ -33,7 +41,7 @@ typedef struct Buttons {
 Error Buttons_new(Buttons* self, Grid* parent, Rect rect, Size grid_size, Button buttons[], int nb_buttons);
 
 /**
- * @brief Draw the Buttons
+ * @brief Draw the Buttons, and call the on_hover callback of the hovered button
  * 
  * @param self Buttons object
  */

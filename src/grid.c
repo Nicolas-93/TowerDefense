@@ -40,10 +40,16 @@ Error Grid_new(
     return 0;
 }
 
-void Grid_set_event_handler(Grid* grid, void (*callback)(Point pos, void* data), void* data) {
+void Grid_set_on_click_handler(Grid* grid, void (*callback)(Point cell_pos, void* data), void* data) {
     assert(callback != NULL);
-    grid->event_handler.data = data;
-    grid->event_handler.callback = callback;
+    grid->click_handler.data = data;
+    grid->click_handler.callback = callback;
+}
+
+void Grid_set_on_hover_handler(Grid* grid, void (*callback)(Point cell_pos, void* data), void* data) {
+    assert(callback != NULL);
+    grid->hover_handler.data = data;
+    grid->hover_handler.callback = callback;
 }
 
 /**
@@ -75,8 +81,8 @@ bool Grid_absolute_pos_to_relative(const Grid* grid, Point abs_pos, Point* rel_p
  * 
  * @param grid 
  */
-static void _Grid_process_click_event(Grid* grid) {
-    if (!Event_is_pressed_click() || !grid->event_handler.callback)
+static void _Grid_process_event(Grid* grid) {
+    if (!grid->hover_handler.callback && !grid->click_handler.callback)
         return;
 
     Point pos;
@@ -84,11 +90,15 @@ static void _Grid_process_click_event(Grid* grid) {
     if (!Grid_absolute_pos_to_relative(grid, ev.mouse, &pos))
         return;
 
-    grid->event_handler.callback(pos, grid->event_handler.data);
+    if (Event_is_pressed_click() && grid->click_handler.callback)
+        grid->click_handler.callback(pos, grid->click_handler.data);
+    
+    if (grid->hover_handler.callback)
+        grid->hover_handler.callback(pos, grid->hover_handler.data);
 }
 
 void Grid_process_event(Grid* grid) {
-    _Grid_process_click_event(grid);
+    _Grid_process_event(grid);
 }
 
 void Grid_free(Grid* grid) {

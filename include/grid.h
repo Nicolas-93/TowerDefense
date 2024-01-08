@@ -26,9 +26,13 @@ typedef struct {
     MLV_Color filled_color;
     Cell** cells;
     struct {
-        void (*callback)(Point pos, void* data);
+        void (*callback)(Point cell_pos, void* data);
         void* data;
-    } event_handler;
+    } click_handler;
+    struct {
+        void (*callback)(Point cell_pos, void* data);
+        void* data;
+    } hover_handler;
 } Grid;
 
 /**
@@ -57,7 +61,7 @@ Error Grid_new(
     MLV_Color filled_color, MLV_Color color_border);
 
 /**
- * @brief Set grid's event handler
+ * @brief Set grid's event handler on click
  * Called when a click event occurs on the grid
  * 
  * @param grid Grid object
@@ -65,7 +69,17 @@ Error Grid_new(
  * and a pointer to data.
  * @param data Pointer to data to pass to the callback function
  */
-void Grid_set_event_handler(Grid* grid, void (*callback)(Point pos, void* data), void* data);
+void Grid_set_on_click_handler(Grid* grid, void (*callback)(Point cell_pos, void* data), void* data);
+
+/**
+ * @brief Set grid's event handler on hover
+ * 
+ * @param grid Grid object
+ * @param callback Callback function taking the hovered cell's position in the grid,
+ * and the cursor's position in the window.
+ * @param data Pointer to data to pass to the callback function
+ */
+void Grid_set_on_hover_handler(Grid* grid, void (*callback)(Point cell_pos, void* data), void* data);
 
 /**
  * @brief Process grid event if any and call the callback function

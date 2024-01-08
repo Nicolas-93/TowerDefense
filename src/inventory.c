@@ -65,7 +65,7 @@ Error Inventory_new(Inventory* self, Grid* parent, void* game, Size size) {
         return ERR_ALLOC;
     }
 
-    Grid_set_event_handler(&self->grid, _Inventory_on_grid_click, self);
+    Grid_set_on_click_handler(&self->grid, _Inventory_on_grid_click, self);
 
     return 0;
 }

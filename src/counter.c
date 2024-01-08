@@ -30,7 +30,7 @@ Error Counter_new(Counter *self, Grid* parent, Rect rect, int min, int max) {
     ) {
         return ERR_ALLOC;
     }
-    Grid_set_event_handler(&self->grid, _Counter_on_grid_click, self);
+    Grid_set_on_click_handler(&self->grid, _Counter_on_grid_click, self);
 
     return 0;
 }

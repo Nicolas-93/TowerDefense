@@ -9,9 +9,10 @@ void Event_pop_event(void) {
     ev.type = MLV_get_event(
         &ev.kb_btn, NULL, NULL,
         NULL, NULL,
-        &x, &y,
+        NULL, NULL,
         &ev.mouse_btn, &ev.state
     );
+    MLV_get_mouse_position(&x, &y);
     ev.mouse = (Point) {.x = x, .y = y};
 
     EV = ev;
