@@ -64,6 +64,8 @@ int Geom_manhattan_distance(Point a, Point b);
  */
 bool Point_on_segment(Point cell, Point p1, Point p2);
 
+bool Point_on_circle(Point pos, Point center, double radius);
+
 Vector2D Vector2D_new(double x, double y);
 
 Vector2D Vector2D_new_from_value(double value);

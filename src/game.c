@@ -115,7 +115,7 @@ void Game_draw(const Game* self) {
     Buttons_draw(&self->buttons);
     Counter_draw(&self->counter);
     DragNDrop_draw();
-    Grid_draw_lines(&self->viewport);
+    // Grid_draw_lines(&self->viewport);
 }
 
 void Game_process_event(Game* self) {

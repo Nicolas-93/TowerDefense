@@ -1,5 +1,15 @@
 #include "gem.h"
+#include "overlay.h"
+#include "geom.h"
 #include <assert.h>
+
+const char* GEM_TYPES_STR[] = {
+    [0]         = "None",
+    [PYRO]      = "Pyro",
+    [DENDRO]    = "Dendro",
+    [HYDRO]     = "Hydro",
+    [MIXED]     = "Mixed",
+};
 
 void Gem_new(Gem* self, Grid* grid, int level) {
     Color color = Color_new_random();
@@ -41,14 +51,27 @@ void Gem_draw_grid(Gem* self, Point pos_rel) {
     Gem_draw_dragndrop(self, pos_abs);
 }
 
+const char* Gem_get_type_str(Gem* self) {
+    return GEM_TYPES_STR[self->type];
+}
+
 void Gem_draw_dragndrop(void* self, Point pos_abs) {
     Gem* gem = (Gem*) self;
 
+    double radius = gem->grid->cell_width / 3;
+
     MLV_draw_filled_circle(
         pos_abs.x, pos_abs.y,
-        gem->grid->cell_width / 3,
+        radius,
         gem->color.mlvrgb
     );
+
+    if (Point_on_circle(Event_get().mouse, pos_abs, radius)) {
+        Overlay_draw(
+            pos_abs,
+            "Level : %d\nType : %s", gem->level, Gem_get_type_str(gem)
+        );
+    }
 }
 
 void Gem_set_grid(Gem* self, Grid* grid) {
