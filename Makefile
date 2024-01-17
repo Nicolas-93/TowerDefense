@@ -55,6 +55,9 @@ distclean: clean
 	rmdir $(BUILD_DIR)/
 	rm -f $(NOM_ZIP)
 
+doc: $(SOURCES) $(HEADERS)
+	doxygen
+
 zip:
 	zip -FSr $(NOM_ZIP) $(CONTENU_ZIP)
 

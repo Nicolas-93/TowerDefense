@@ -77,3 +77,7 @@ void Gem_draw_dragndrop(void* self, Point pos_abs) {
 void Gem_set_grid(Gem* self, Grid* grid) {
     self->grid = grid;
 }
+
+void Gem_free(Gem* self) {
+    *self = (Gem) {0};
+}

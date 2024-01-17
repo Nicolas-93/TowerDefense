@@ -102,7 +102,7 @@ void Grid_process_event(Grid* grid) {
 }
 
 void Grid_free(Grid* grid) {
-    for (int i = 0; i < grid->width; ++i) {
+    for (int i = 0; i < grid->height; ++i) {
         free(grid->cells[i]);
     }
     free(grid->cells);

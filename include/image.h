@@ -26,6 +26,19 @@ extern char* IMAGES_FILENAMES[];
  */
 Error Image_load_all(void);
 
+/**
+ * @brief Get the Image object
+ * 
+ * @param name Image name (see ImageName enum)
+ * @param size Requested size (resized if needed)
+ * @return MLV_Image* 
+ */
 MLV_Image* Image_get(ImageName name, Size size);
+
+/**
+ * @brief Free all images
+ * 
+ */
+void Image_free(void);
 
 #endif

@@ -155,3 +155,8 @@ void Monster_draw(const Monster* self) {
         Shot_draw(shot);
     }
 }
+
+void Monster_free(Monster* self) {
+    Deque_free(&self->future_shots);
+    *self = (Monster) {0};
+}

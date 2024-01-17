@@ -6,3 +6,5 @@ tmp/
 .gitignore
 TODO
 callgrind*
+*.log
+*.out

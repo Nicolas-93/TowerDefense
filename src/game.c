@@ -125,3 +125,11 @@ void Game_process_event(Game* self) {
     Buttons_process_event(&self->buttons);
     Counter_process_event(&self->counter);
 }
+
+void Game_free(Game* self) {
+    Counter_free(&self->counter);
+    Inventory_free(&self->inv);
+    Land_free(&self->land);
+    Grid_free(&self->viewport);
+    Buttons_free(&self->buttons);
+}

@@ -85,4 +85,11 @@ bool Tower_is_empty(const Tower* self);
  */
 bool Tower_has_gem(const Tower* self);
 
+/**
+ * @brief Free tower's allocated ressources and its gem.
+ * 
+ * @param self 
+ */
+void Tower_free(Tower* self);
+
 #endif

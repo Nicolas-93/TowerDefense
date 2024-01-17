@@ -58,4 +58,11 @@ bool Game_on_gem_release(
     Point abs_pos
 );
 
+/**
+ * @brief Free all resources used by the Game
+ * 
+ * @param self 
+ */
+void Game_free(Game* self);
+
 #endif

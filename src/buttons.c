@@ -109,3 +109,8 @@ void Buttons_process_event(Buttons* self) {
     _Buttons_reset_hovered(self);
     Grid_process_event(&self->grid);
 }
+
+void Buttons_free(Buttons* self) {
+    Grid_free(&self->grid);
+    *self = (Buttons) {0};
+}

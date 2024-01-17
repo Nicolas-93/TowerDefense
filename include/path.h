@@ -61,4 +61,11 @@ void Path_print(Path* self);
  */
 bool Path_is_path(const Path* self, Point p);
 
+/**
+ * @brief Free Path's allocated memory
+ * 
+ * @param self 
+ */
+void Path_free(Path* self);
+
 #endif

@@ -59,4 +59,11 @@ void Gem_draw_grid(Gem* self, Point pos_rel);
  */
 void Gem_set_grid(Gem* self, Grid* grid);
 
+/**
+ * @brief Free ressources used by the gem
+ * 
+ * @param self 
+ */
+void Gem_free(Gem* self);
+
 #endif

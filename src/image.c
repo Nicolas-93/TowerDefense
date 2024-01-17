@@ -30,3 +30,9 @@ MLV_Image* Image_get(ImageName name, Size size) {
 
     return IMAGES_LOADED[name];
 }
+
+void Image_free(void) {
+    for (int i = 0; i < IMAGE_LEN; ++i) {
+        MLV_free_image(IMAGES_LOADED[i]);
+    }
+}

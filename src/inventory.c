@@ -70,7 +70,21 @@ Error Inventory_new(Inventory* self, Grid* parent, void* game, Size size) {
     return 0;
 }
 
+static void _Inventory_free_gems(Inventory* self) {
+    for (int j = 0; j < self->height; j++) {
+        for (int i = 0; i < self->width; i++) {
+            Point pos = {.x = i, .y = j};
+            if (Inventory_get(self, pos)) {
+                Gem* gem = Inventory_pop(self, pos);
+                Gem_free(gem);
+                free(gem);
+            }
+        }
+    }
+}
+
 void Inventory_free(Inventory* self) {
+    _Inventory_free_gems(self);
     free(self->gems);
     Grid_free(&self->grid);
 }
