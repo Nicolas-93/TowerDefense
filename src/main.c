@@ -8,31 +8,21 @@
 #include "event.h"
 #include "game.h"
 
-Args ARGS = {
-    .win = {
-        .size = {800, 480},
-        .fullscreen = false,
-        .fps = 120,
-    },
-};
+int main(int argc, char *argv[]) {
 
-int main(int argc, char const *argv[]) {
+    Args args = parse_args(argc, argv);
 
-    if (ARGS.win.fullscreen) {
-        ARGS.win.size.width = MLV_get_desktop_width();
-        ARGS.win.size.height = MLV_get_desktop_height();
-    }
     int seed = time(NULL);
     srand(seed);
     fprintf(stderr, "seed=%d\n", seed);
 
-    MLV_create_window("", "", ARGS.win.size.width, ARGS.win.size.height);
-    MLV_change_frame_rate(ARGS.win.fps);
+    MLV_create_window("", "", args.win.size.width, args.win.size.height);
+    MLV_change_frame_rate(args.win.fps);
     Clock_update();
     Image_load_all();
 
     Game game;
-    Game_new(&game, ARGS.win.size);
+    Game_new(&game, args.win.size);
 
     while (true) {
         Clock_update();
