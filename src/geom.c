@@ -99,9 +99,21 @@ bool Point_on_segment(Point cell, Point p1, Point p2) {
     return false;
 }
 
+bool Point_on_circle(Point pos, Point center, double radius) {
+    return Vector2D_norm(Vector2D_sub(pos, center)) <= radius;
+}
+
 bool Rect_contains(Rect rect, Point p) {
     return (
         p.x >= rect.ax && p.x < rect.bx
         && p.y >= rect.ay && p.y < rect.by
     );
+}
+
+double Rect_get_width(Rect rect) {
+    return rect.bx - rect.ax;
+}
+
+double Rect_get_height(Rect rect) {
+    return rect.by - rect.ay;
 }

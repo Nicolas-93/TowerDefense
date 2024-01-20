@@ -14,4 +14,6 @@ typedef struct Args {
     Window win;
 } Args;
 
+Args parse_args(int argc, char *argv[]);
+
 #endif

@@ -9,7 +9,6 @@
 #include <stdint.h>
 
 typedef struct {
-    Rect pos;
     MLV_Color filled_color;
     void* data;
 } Cell;
@@ -97,20 +96,28 @@ void Grid_process_event(Grid* grid);
 void Grid_free(Grid* grid);
 
 /**
+ * @brief Get cell absolute position as a Rect
+ * 
+ * @param grid Grid object
+ * @param cell_relative Cell coordinates relative to grid
+ * @return Rect 
+ */
+Rect Grid_get_cell_rect(const Grid* grid, Point cell_relative);
+
+/**
  * @brief Returns absolute coordinates of a cell's top-left corner
  * 
- * @param grid 
- * @param cell_relative 
+ * @param grid Grid object
+ * @param cell_relative Cell coordinates relative to grid
  * @return Point 
  */
 Point Grid_get_absolute_coords_TL(const Grid* grid, Point cell_relative);
 
-
 /**
  * @brief Returns absolute coordinates of a cell's bottom-right corner
  * 
- * @param grid 
- * @param cell_relative 
+ * @param grid Grid object
+ * @param cell_relative Cell coordinates relative to grid
  * @return Point 
  */
 Point Grid_get_absolute_coords_BR(const Grid* grid, Point cell_relative);
@@ -118,8 +125,8 @@ Point Grid_get_absolute_coords_BR(const Grid* grid, Point cell_relative);
 /**
  * @brief Returns absolute coordinates of a cell's center
  * 
- * @param grid 
- * @param cell_relative 
+ * @param grid Grid object
+ * @param cell_relative Cell coordinates relative to grid
  * @return Point 
  */
 Point Grid_get_absolute_coords_C(const Grid* grid, Point cell_relative);
@@ -136,14 +143,14 @@ Cell* Grid_get_cell(const Grid* grid, Point cell_relative);
 /**
  * @brief Draw only grid's lines
  * 
- * @param grid 
+ * @param grid Grid object
  */
 void Grid_draw_lines(const Grid* grid);
 
 /**
  * @brief Draw grid with lines and per-cell colors
  * 
- * @param grid 
+ * @param grid Grid object
  */
 void Grid_draw_filled_rects(const Grid* grid);
 

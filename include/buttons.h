@@ -54,4 +54,11 @@ void Buttons_draw(const Buttons* self);
  */
 void Buttons_process_event(Buttons* self);
 
+/**
+ * @brief Free ressources allocated by Buttons
+ * 
+ * @param self 
+ */
+void Buttons_free(Buttons* self);
+
 #endif

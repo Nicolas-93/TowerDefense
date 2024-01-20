@@ -8,33 +8,31 @@
 #include "event.h"
 #include "game.h"
 
-Args ARGS = {
-    .win = {
-        .size = {800, 480},
-        .fullscreen = false,
-        .fps = 120,
-    },
-};
+static __sig_atomic_t RUNNING = true;
+void execute_at_exit(void* data) { RUNNING = false; }
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char *argv[]) {
 
-    if (ARGS.win.fullscreen) {
-        ARGS.win.size.width = MLV_get_desktop_width();
-        ARGS.win.size.height = MLV_get_desktop_height();
-    }
+    Args args = parse_args(argc, argv);
+    Game game;
+    Error err = 0;
+
     int seed = time(NULL);
     srand(seed);
     fprintf(stderr, "seed=%d\n", seed);
 
-    MLV_create_window("", "", ARGS.win.size.width, ARGS.win.size.height);
-    MLV_change_frame_rate(ARGS.win.fps);
+    MLV_execute_at_exit(execute_at_exit, &game);
+    MLV_create_window("", "", args.win.size.width, args.win.size.height);
+    MLV_change_frame_rate(args.win.fps);
     Clock_update();
-    Image_load_all();
 
-    Game game;
-    Game_new(&game, ARGS.win.size);
+    if ((err = Image_load_all()) < 0 ||
+        (err = Game_new(&game, args.win.size)) < 0) {
+        fprintf(stderr, "Error: %s\n", Error_to_string(err));
+        return EXIT_FAILURE;
+    }
 
-    while (true) {
+    while (RUNNING) {
         Clock_update();
         Event_pop_event();
         MLV_clear_window(MLV_COLOR_GRAY50);
@@ -47,6 +45,10 @@ int main(int argc, char const *argv[]) {
 
         MLV_delay_according_to_frame_rate();
     }
+
+    Game_free(&game);
+    Image_free();
+    MLV_free_window();
 
     return EXIT_SUCCESS;
 

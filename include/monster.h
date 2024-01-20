@@ -76,4 +76,11 @@ Error Monster_update(Monster* self);
  */
 void Monster_draw(const Monster* self);
 
+/**
+ * @brief Free the monster.
+ * 
+ * @param self 
+ */
+void Monster_free(Monster* self);
+
 #endif

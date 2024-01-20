@@ -81,7 +81,7 @@ Error Game_new(Game* self, Size win_size) {
     if ((err = Land_new(&self->land, &self->viewport, self, 28, 22)) < 0) {
         return err;
     }
-    Path_print(&self->land.path);
+    // Path_print(&self->land.path);
 
     if ((err = Inventory_new(
         &self->inv, &self->viewport, self, (Size) {.width = 3, .height = 12}
@@ -159,4 +159,12 @@ void Game_process_event(Game* self) {
     Land_process_event(&self->land);
     Buttons_process_event(&self->buttons);
     Counter_process_event(&self->counter);
+}
+
+void Game_free(Game* self) {
+    Counter_free(&self->counter);
+    Inventory_free(&self->inv);
+    Land_free(&self->land);
+    Grid_free(&self->viewport);
+    Buttons_free(&self->buttons);
 }

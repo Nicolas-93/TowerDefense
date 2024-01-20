@@ -145,3 +145,11 @@ void Tower_draw(const Tower* self) {
         Gem_draw_grid(self->gem, self->pos);
     }
 }
+
+void Tower_free(Tower* self) {
+    if (Tower_has_gem(self)) {
+        Gem_free(self->gem);
+    }
+    free(self->gem);
+    *self = (Tower) {0};
+}

@@ -215,3 +215,8 @@ void Path_new(Path* self) {
     };
     _Path_generate_path(self);
 }
+
+void Path_free(Path* self) {
+    ArrayList_free(&self->waypoints);
+    *self = (Path) {0};
+}

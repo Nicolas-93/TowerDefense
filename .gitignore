@@ -1,8 +1,14 @@
 assets/
-doc/
-build/
+doc/doxygen-awesome-css
+doc/html
+doc/latex
+*.pdf
+*.png
+bin/
 tmp/
 .vscode/*
 .gitignore
 TODO
 callgrind*
+*.log
+*.out

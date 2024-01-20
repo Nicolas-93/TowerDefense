@@ -207,5 +207,18 @@ void Land_draw(const Land* self) {
 }
 
 void Land_free(Land* self) {
+    DequeNode* entry;
+    DEQUE_FOREACH(entry, &self->monsters) {
+        Monster_free(Deque_get_elem(entry));
+    }
+    Deque_free(&self->monsters);
 
+    DEQUE_FOREACH(entry, &self->towers) {
+        Tower_free(Deque_get_elem(entry));
+    }
+    Deque_free(&self->towers);
+
+    Path_free(&self->path);
+    Grid_free(&self->grid);
+    *self = (Land) {0};
 }

@@ -5,11 +5,10 @@
 #include <MLV/MLV_image.h>
 #include "geom.h"
 
-#define IMAGE_LEN 5
+#define IMAGE_LEN 4
 
 typedef enum ImageName {
-    IMAGE_MONSTER = 0,
-    IMAGE_TOWER,
+    IMAGE_TOWER = 0,
     IMAGE_MANA_POOL,
     IMAGE_GEM_CREATE,
     IMAGE_GEM_MERGING,
@@ -26,6 +25,19 @@ extern char* IMAGES_FILENAMES[];
  */
 Error Image_load_all(void);
 
+/**
+ * @brief Get the Image object
+ * 
+ * @param name Image name (see ImageName enum)
+ * @param size Requested size (resized if needed)
+ * @return MLV_Image* 
+ */
 MLV_Image* Image_get(ImageName name, Size size);
+
+/**
+ * @brief Free all images
+ * 
+ */
+void Image_free(void);
 
 #endif

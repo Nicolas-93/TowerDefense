@@ -113,19 +113,20 @@ void Land_draw(const Land* self);
  */
 void Land_free(Land* self);
 
-/**Inventory_on_gem_release
- * @brief Land event handler
+/**
+ * @brief Process land's events (clicks on the grid)
  * 
- * @param self Land object
+ * @param self 
  */
 void Land_process_event(Land* self);
 
 /**
- * @brief Callback for when a gem is released
+ * @brief Callback for when a gem is released, used
+ * by dragndrop
  * 
- * @param context 
- * @param object 
- * @param abs_pos 
+ * @param context Land object
+ * @param object Gem object
+ * @param abs_pos Absolute position of the gem
  * @return true
  * @return false
  */
