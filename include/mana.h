@@ -1,6 +1,8 @@
 #ifndef MANA_H
 #define MANA_H
 
+#include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include "utils.h"
 
