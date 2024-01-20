@@ -4,17 +4,17 @@
 
 ## Compilation
 
-Pour compiler le projet, il suffit de lancer la commande `make` à la racine du projet. Cela créera un dossier `build` contenant les fichiers objets et l'exécutable `td`.
+Pour compiler le projet, il suffit de lancer la commande `make` à la racine du projet. Cela créera un dossier `bin`, s'il n'existe pas, qui contiendra les fichiers objets et l'exécutable `td`.
 
 Vous pouvez également lancer la commande `make clean` pour supprimer les fichiers objets, ou `make distclean` pour supprimer également l'exécutable.
 
 ## Utilisation
 
-Pour lancer le programme, il suffit de lancer la commande `./build/td` depuis la racine du projet (nécessaire pour le chargement correct des icônes)
+Pour lancer le programme, vous pouvez utiliser la commande `./bin/td` depuis la racine du projet (nécessaire pour le chargement correct des icônes).
 
 Vous pouvez également utiliser ces options :
 
-- ``-w``, ``--window=WIDTHxHEIGHT`` : Taille de la fenêtre, par défaut (800x480)
+- ``-w``, ``--window=WIDTHxHEIGHT`` : Taille de la fenêtre, par défaut (800x480), au minimum 400x400
 
 - ``-f``, ``--fullscreen`` : Maximise la taille de la fenêtre à la taille de l'écran
 
@@ -23,7 +23,7 @@ Vous pouvez également utiliser ces options :
 Par exemple :
 
 ```shell
-./build/td --window=500x500
+./bin/td --window=500x500
 ```
 
 ## Documentation doxygen
@@ -109,7 +109,7 @@ Il est ainsi nécessaire de stocker les objets dans les nœuds. Mais comment fai
 ##### Flexible Array Member
 
 Normalisé par la norme C99, après l'existence de *hacks* avec la déclaration de tableaux de taille nulles, les *Flexible Array Member* (FAM) permetent la déclaration d'un tableau dans une structure, dont sa taille est inconnue à la compilation. Celui-ci doit être placé impérativement comme dernier membre d'une structure.
-Cependant une contrainte naturelle s'ajoute : la structure ne peut plus être elle-même utilisée pour déclarer un tableau de ce type. En effet, le tableau fait partie intégrante de structure, et n'est pas un pointeur.
+Cependant une contrainte naturelle s'ajoute : la structure ne peut plus être elle-même utilisée pour déclarer un tableau de ce type. En effet, le tableau fait partie intégrante de la structure, et n'est pas un pointeur.
 
 ```c
 typedef struct DequeNode {
@@ -125,7 +125,7 @@ En pratique, son utilisation revient à allouer l'espace pour les membres de la 
 malloc(sizeof(DequeNode) + self->elem_size)
 ```
 
-Nous pouvons désormais stocker nos données, passées par pointeur, dans nos nœuds à l'aide de simples ``memcpy`` :
+Nous pouvons désormais stocker nos données, passées par pointeur, dans nos nœuds à l'aide de simples ``memcpy`` !
 
 ```c
 memcpy(node->elem, elem, self->elem_size);
@@ -270,7 +270,7 @@ Nous y définissions également les fonctions de rappel pour les boutons situés
 
 ### Overlay
 
-Un prérequis essentiel l'utilisateur est de pouvoir obtenir des informations sur l'objet qu'il survole, donc de dessiner un encart.
+Un prérequis essentiel à l'utilisateur est de pouvoir obtenir des informations sur l'objet qu'il survole, nous devons donc être capable de dessiner un encart.
 
 Pour simplifier cette démarche une fonction avec un prototype semblable à ``printf`` serait idéal :
 
@@ -278,7 +278,7 @@ Pour simplifier cette démarche une fonction avec un prototype semblable à ``pr
 void Overlay_draw(Point pos, const char *text, ...)
 ```
 
-Cependant un problème se pose ici. Que ce passe-t-il si l'utilisateur de la fonction commet une erreur sur les types des paramètres ? Dans le cas courant, l'utilisateur de ``printf`` a le droit à un message d'avertissement explicite émit par le compilateur :
+Cependant un problème se pose ici. Que se passe-t-il si l'utilisateur commet une erreur sur les types des arguments ? Dans le cas courant de ``printf`` nous aurions eu le droit à un message d'avertissement explicite émit par le compilateur :
 
 ```c
 warn_type.c:5:14: warning: format ‘%s’ expects argument of type ‘char *’,
@@ -314,6 +314,20 @@ but argument 3 has type ‘double’ [-Wformat=]
       |                                          %f
 ```
 
+### Traject
+
+Le jeu requierant deux types de déplacements : les monstres et les tirs, nous devons donc limiter la redondance de code.
+
+Pour cela nous avons créé un type ``Traject`` attaché à ces deux entités qui conserve les informations nécessaire au bon déplacement.
+Cela comprend bien évidemment la position courante et le vecteur direction, mais également la vitesse de l'objet par rapport à la taille d'une cellule (``base_unit``). Cela permet de modifier facilement la vitesse en vue des effets devant être appliqués aux monstres.
+
+\pagebreak
+
+### Image
+
+Dans ce module, nous chargeons statiquement, toutes les images nécessaire au jeu (quatre actuellement). Le redimensionnement peut s'effectuer à l'accès ``Image_get``, en demandant une autre taille que celle actuelle, mais en pratique nous l'effectuons seulement au premiers aux appels, puisque la fenêtre est fixe.
+
+Un inconvénient subsiste : il est nécessaire de lancer le programme depuis la racine du projet, sinon le jeu ne pourra pas se lancer car il ne trouvera pas les images nécessaire.
 
 ## Dépendances automatisées
 
