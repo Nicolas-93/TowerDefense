@@ -1,5 +1,9 @@
 assets/
-doc/
+doc/doxygen-awesome-css
+doc/html
+doc/latex
+*.pdf
+*.png
 build/
 tmp/
 .vscode/*

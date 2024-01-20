@@ -2,9 +2,10 @@ CC=gcc
 BUILD_DIR=build
 SRC_DIR=src
 INC_DIR=include
+DOC_DIR=doc
 INCLUDE=-I$(INC_DIR)
 LIBS=-lm -lMLV
-CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -MMD -Wenum-conversion -Wall -pedantic -std=c17 -g -O0
+CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -MMD -Wenum-conversion -Wall -pedantic -std=c17 -O2 -DNDEBUG
 NOM_ZIP=SEBAN_SOUIOU_TowerDefense.zip
 EXEC=td
 CONTENU_ZIP=$(SRC_DIR) $(INC_DIR) .clang-format .clang-tidy Makefile rapport.pdf
@@ -34,13 +35,13 @@ $(BUILD_DIR)/$(EXEC): $(OBJS) | $(BUILD_DIR)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@
 
-rapport: rapport.pdf
+rapport: $(DOC_DIR)/rapport.pdf
 
-rapport.pdf: rapport.md
-	@mkdir --parents logos
-	@wget --quiet --show-progress --no-clobber -O logos/LogoLIGM.png "https://drive.google.com/uc?export=download&confirm=yes&id=1cZjxS6Rwp8LU4Eyahqz0eUS8aH0_VrVB" || true
-	@wget --quiet --show-progress --no-clobber -O logos/namedlogoUGE.png "https://drive.google.com/uc?export=download&confirm=yes&id=1YGm1N7griuDbJhC6rSgBHrrcOsHKM5xg" || true
-	pandoc --toc rapport.md -o rapport.pdf
+$(DOC_DIR)/rapport.pdf: $(DOC_DIR)/rapport.md
+	@mkdir --parents $(DOC_DIR)/logos
+	@wget --quiet --show-progress --no-clobber -O $(DOC_DIR)/logos/LogoLIGM.png "https://drive.google.com/uc?export=download&confirm=yes&id=1cZjxS6Rwp8LU4Eyahqz0eUS8aH0_VrVB" || true
+	@wget --quiet --show-progress --no-clobber -O $(DOC_DIR)/logos/namedlogoUGE.png "https://drive.google.com/uc?export=download&confirm=yes&id=1YGm1N7griuDbJhC6rSgBHrrcOsHKM5xg" || true
+	pandoc --toc $< -o $@ --metadata-file=$(DOC_DIR)/metadata.yaml 
 
 format: $(SOURCES) $(HEADERS)
 	clang-format -i --style=file $^
