@@ -3,20 +3,50 @@
 #include "overlay.h"
 #include <stdio.h>
 
-static void Game_buy_tower(void* self) {}
-static void Game_buy_mana_pool(void* self) {}
-static void Game_buy_gem(void* self) {}
+static void Game_buy_tower(void* self) {
+    Game* game = (Game*) self;
+    uint32_t price = 100 * pow(2, (game->land.towers.len + game->land.available_towers - 3));
+    if (Mana_have_sufficient_mana(&game->mana, price)) {
+        Mana_add(&game->mana, -price);
+        game->land.available_towers++;
+    }
+}
+
+static void Game_buy_mana_pool(void* self) {
+    Game* game = (Game*) self;
+    Mana_upgrade(&game->mana);
+}
+
+static void Game_buy_gem(void* self) {
+    Game* game = (Game*) self;
+    uint32_t price = 100 * pow(2, game->counter.value);
+    if (Mana_have_sufficient_mana(&game->mana, price)) {
+        Mana_add(&game->mana, -price);
+        Gem gem;
+        Gem_new(&gem, &game->land.grid, game->counter.value);
+        /* Point point = (Point) {
+            .x = 0,
+            .y = 0
+        };
+        Inventory_put(&game->inv, &gem, point); */
+
+    }
+}
 static void Game_buy_gem_merging(void* self) {}
 
 static void Game_buy_tower_draw_overlay(Point pos, void* self) {
-    // Game* game = (Game*) self;
-    Overlay_draw(pos, "New tower\n(cost: %d mana)", 5);
+    Game* game = (Game*) self;
+    uint32_t price = 100 * pow(2, (game->land.towers.len + game->land.available_towers - 3));
+    Overlay_draw(pos, "Available: %d\nNew tower: %d mana", game->land.available_towers, price);
 }
 static void Game_buy_mana_pool_draw_overlay(Point pos, void* self) {
-    // Game* game = (Game*) self;
-    Overlay_draw(pos, "Upgrade mana pool\n(cost: %d mana)", 50);
+    Game* game = (Game*) self;
+    Overlay_draw(pos, "Mana: %d\nUpgrade mana pool: %d", game->mana.mana, (uint32_t) (500 * pow(1.4, game->mana.level)));
 }
-static void Game_buy_gem_draw_overlay(void* self) {}
+static void Game_buy_gem_draw_overlay(Point pos, void* self) {
+    Game* game = (Game*) self;
+    Overlay_draw(pos, "Mana: %d\nUpgrade mana pool: %d", game->mana.mana, (uint32_t) (100 * pow(2, game->counter.value)));
+}
 static void Game_buy_gem_merging_draw_overlay(void* self) {}
 
 
@@ -67,6 +97,10 @@ Error Game_new(Game* self, Size win_size) {
         return err;
     }
 
+    Mana_new(
+        &self->mana, 150, 2000
+    );
+
     static Button buttons[4];
     memcpy(buttons, (Button[]) {{
             .icon = IMAGE_TOWER,
@@ -84,6 +118,7 @@ Error Game_new(Game* self, Size win_size) {
         },{ .icon = IMAGE_GEM_CREATE,
             .callback = {
                 .on_click = Game_buy_gem,
+                .on_hover = Game_buy_gem_draw_overlay,
                 .context = self,
             }
         },{ .icon = IMAGE_GEM_MERGING,
@@ -115,7 +150,7 @@ void Game_draw(const Game* self) {
     Buttons_draw(&self->buttons);
     Counter_draw(&self->counter);
     DragNDrop_draw();
-    Grid_draw_lines(&self->viewport);
+    // Grid_draw_lines(&self->viewport);
 }
 
 void Game_process_event(Game* self) {
