@@ -108,12 +108,31 @@ void Grid_free(Grid* grid) {
     free(grid->cells);
 }
 
+Rect Grid_get_cell_rect(const Grid* grid, Point cell_relative) {
+    assert(Rect_contains((Rect) {
+            .a = {0, 0},
+            .b = {grid->width, grid->height}
+        },
+        cell_relative
+    ));
+    return (Rect) {
+        .a = {
+            .x = grid->view.ax + cell_relative.x * grid->cell_width,
+            .y = grid->view.ay + cell_relative.y * grid->cell_height
+        },
+        .b = {
+            .x = grid->view.ax + (cell_relative.x + 1) * grid->cell_width,
+            .y = grid->view.ay + (cell_relative.y + 1) * grid->cell_height
+        }
+    };
+}
+
 Point Grid_get_absolute_coords_TL(const Grid* grid, Point cell_relative) {
-    return grid->cells[(int) cell_relative.y][(int) cell_relative.x].pos.a;
+    return Grid_get_cell_rect(grid, cell_relative).a;
 }
 
 Point Grid_get_absolute_coords_BR(const Grid* grid, Point cell_relative) {
-    return grid->cells[(int) cell_relative.y][(int) cell_relative.x].pos.b;
+    return Grid_get_cell_rect(grid, cell_relative).b;
 }
 
 Point Grid_get_absolute_coords_C(const Grid* grid, Point cell_relative) {
@@ -130,8 +149,8 @@ static Error _Grid_init_cells(Grid* grid) {
         return ERR_ALLOC;
     }
 
-    int outside_width  = grid->view.bx - grid->view.ax;
-    int outside_height = grid->view.by - grid->view.ay;
+    int outside_width  = Rect_get_width(grid->view);
+    int outside_height = Rect_get_height(grid->view);
 
     int inside_width  = outside_width  * grid->margin;
     int inside_height = outside_height * grid->margin;
@@ -140,10 +159,9 @@ static Error _Grid_init_cells(Grid* grid) {
     grid->cell_height = inside_height / grid->height;
 
     if (grid->square) {
-        grid->cell_width = MIN(grid->cell_width, grid->cell_height);
-        grid->cell_height = grid->cell_width;
+        grid->cell_width = grid->cell_height = MIN(grid->cell_width, grid->cell_height);
     }
- 
+
     grid->view.ax += (outside_width
                         - grid->cell_width * grid->width) / 2;
     grid->view.ay += (outside_height
@@ -160,16 +178,7 @@ static Error _Grid_init_cells(Grid* grid) {
         }
         cells[j] = ligne;
         for (int i = 0; i < grid->width; ++i) {
-            int ax = grid->view.ax + (i * grid->cell_width);
-            int ay = grid->view.ay + (j * grid->cell_height);
-            
             cells[j][i] = (Cell) {
-                .pos = {
-                    .ax = ax,
-                    .ay = ay,
-                    .bx = (ax + grid->cell_width),
-                    .by = (ay + grid->cell_height)
-                },
                 .filled_color = grid->filled_color
             };
         }
@@ -200,8 +209,9 @@ void Grid_draw_lines(const Grid* grid) {
 void Grid_draw_filled_rects(const Grid* grid) {
     for (int i = 0; i < grid->height; ++i) {
         for (int j = 0; j < grid->width; ++j) {
+            Rect cell_rect = Grid_get_cell_rect(grid, (Point) {.x = j, .y = i});
             MLV_draw_filled_rectangle(
-                grid->cells[i][j].pos.ax, grid->cells[i][j].pos.ay,
+                cell_rect.ax, cell_rect.ay,
                 grid->cell_width, grid->cell_height,
                 grid->cells[i][j].filled_color
             );

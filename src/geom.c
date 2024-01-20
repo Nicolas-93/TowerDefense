@@ -109,3 +109,11 @@ bool Rect_contains(Rect rect, Point p) {
         && p.y >= rect.ay && p.y < rect.by
     );
 }
+
+double Rect_get_width(Rect rect) {
+    return rect.bx - rect.ax;
+}
+
+double Rect_get_height(Rect rect) {
+    return rect.by - rect.ay;
+}
