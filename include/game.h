@@ -6,6 +6,7 @@
 #include "inventory.h"
 #include "buttons.h"
 #include "counter.h"
+#include "mana.h"
 
 typedef struct Game {
     Grid viewport;
@@ -13,6 +14,7 @@ typedef struct Game {
     Inventory inv;
     Buttons buttons;
     Counter counter;
+    Mana mana;
 } Game;
 
 /**
