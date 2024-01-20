@@ -5,11 +5,11 @@
 #include <MLV/MLV_all.h>
 
 static void print_help(int exit_code) {
-    printf("Usage: ./build/td [OPTIONS]\n");
-    printf("Options:\n");
-    printf("  -w, --window=WIDTHxHEIGHT  Set window size\n");
-    printf("  -f, --fullscreen           Set fullscreen mode\n");
-    printf("  -h, --help                 Print this help\n");
+    printf("Usage: ./build/td [OPTIONS]\n"
+           "Options:\n"
+           "  -w, --window=WIDTHxHEIGHT  Set window size\n"
+           "  -f, --fullscreen           Set fullscreen mode\n"
+           "  -h, --help                 Print this help\n");
     exit(exit_code);
 }
 
@@ -36,9 +36,9 @@ Args parse_args(int argc, char *argv[]) {
         switch (c) {
         case 'w':
             if (sscanf(optarg, "%lfx%lf", &args.win.size.width, &args.win.size.height) != 2 ||
-                args.win.size.width < 500 || args.win.size.height < 500
+                args.win.size.width < 400 || args.win.size.height < 400
             ) {
-                fprintf(stderr, "Window size must be greater than 500x500\n");
+                fprintf(stderr, "Window size must be greater than 400x400\n");
                 exit(EXIT_FAILURE);
             }
             break;

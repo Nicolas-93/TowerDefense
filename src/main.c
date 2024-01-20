@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
 
     Args args = parse_args(argc, argv);
     Game game;
+    Error err = 0;
 
     int seed = time(NULL);
     srand(seed);
@@ -24,9 +25,12 @@ int main(int argc, char *argv[]) {
     MLV_create_window("", "", args.win.size.width, args.win.size.height);
     MLV_change_frame_rate(args.win.fps);
     Clock_update();
-    Image_load_all();
 
-    Game_new(&game, args.win.size);
+    if ((err = Image_load_all()) < 0 ||
+        (err = Game_new(&game, args.win.size)) < 0) {
+        fprintf(stderr, "Error: %s\n", Error_to_string(err));
+        return EXIT_FAILURE;
+    }
 
     while (RUNNING) {
         Clock_update();

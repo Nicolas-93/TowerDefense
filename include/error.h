@@ -8,6 +8,15 @@ typedef enum Error {
     INFO_MONSETR_IS_DEAD = -4,
     INFO_NO_MONSTER_IN_RANGE = -5,
     INFO_MONSTER_TARGETED = -6,
+    ERR_IMAGE_LOAD = -7,
 } Error;
+
+/**
+ * @brief Return the string corresponding to the error
+ * 
+ * @param err error
+ * @return const char* 
+ */
+const char* Error_to_string(Error err);
 
 #endif
