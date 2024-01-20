@@ -58,6 +58,10 @@ Error Monster_add_future_shot(Monster* self, const Shot* shot) {
  * @return false Still alive
  */
 static bool _Monster_suffer_damages(Monster* self, const Shot* shot) {
+    uint32_t damages = 1 * pow(2, shot->gem.level) * (1 - cos(self->color.hsv.h - shot->gem.color.hsv.h) / 2);
+    if (damages > self->current_hp)
+        return true;
+    self->current_hp -= damages;
     return false;
 }
 
@@ -131,16 +135,6 @@ Error Monster_update(Monster* self) {
 }
 
 void Monster_draw(const Monster* self) {
-    /*static bool resized = false;
-    if (!resized) {
-        MLV_resize_image_with_proportions(
-            Image_get(IMAGE_MONSTER),
-            self->grid->cell_width,
-            self->grid->cell_height
-        );
-        resized = true;
-    }
-    MLV_draw_image(Image_get(IMAGE_MONSTER), self->traj.pos.x, self->traj.pos.y);*/
     MLV_draw_filled_circle(
         self->traj.pos.x,
         self->traj.pos.y,

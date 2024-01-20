@@ -10,12 +10,14 @@
 #include "path.h"
 #include "timer.h"
 #include "event.h"
+#include "mana.h"
 
 #define H_PARAMETER 100
 
 typedef struct Land {
     Path path;              /*< Monsters path */
     Deque towers;           /*< Placed towers */
+    int available_towers;   /*< Avalaible towers to place*/
     Deque monsters;         /*< Monsters on the land */
     uint16_t wave_counter;  /*< Monsters waves counter */
     Grid grid;              /*< Land's grid */

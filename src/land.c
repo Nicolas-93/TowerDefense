@@ -58,10 +58,11 @@ static void _Land_on_grid_click(Point pos, void* data) {
             );
         }
     }
-    else {
+    else if (self->available_towers > 0) {
         Tower tower;
         Tower_new(&tower, &self->grid, pos);
         Land_add_tower(self, &tower);
+        self->available_towers--;
     }
 }
 
@@ -69,6 +70,7 @@ Error Land_new(Land* self, Grid* parent, void* game, uint16_t width, uint16_t he
     *self = (Land) {
         .wave_counter = 0,
         .game = game,
+        .available_towers = 3,
     };
 
     Deque_init(&self->monsters, sizeof(Monster));
@@ -101,23 +103,15 @@ static void _Land_set_grid_color(Land* self) {
     Grid_get_cell(&self->grid, Path_get_end(&self->path))->filled_color = MLV_COLOR_RED;
 }
 
+
+
+
 Error Land_add_tower(Land* self, Tower* tower) {
     assert(tower);
-
-    static int tmp = 0;
 
     if (Land_is_occupied(self, tower->pos)) {
         return ERR_CASE_ALREADY_USED;
     }
-
-    // TODO: Remove this
-    if (tmp % 3 == 0) {
-        Gem* gem = malloc(sizeof(Gem));
-        Gem_new(gem, &self->grid, 1);
-        Tower_set_gem(tower, gem);
-    }
-    tmp++;
-
 
     Deque_append(&self->towers, tower);
 
