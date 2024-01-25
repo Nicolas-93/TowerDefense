@@ -1,6 +1,7 @@
 #include "game.h"
 #include "dragndrop.h"
 #include "overlay.h"
+#include "mana.h"
 #include <stdio.h>
 
 static void Game_buy_tower(void* self) {
@@ -87,9 +88,16 @@ Error Game_new(Game* self, Size win_size) {
     }
     // Path_print(&self->land.path);
 
+    if ((err = Mana_new(
+        &self->mana, &self->viewport, (Rect) {.ax = 0, .ay = 0, .bx = 25, .by = 0},
+        150, 2000
+    )) < 0) {
+        return err;
+    }
+
     if ((err = Inventory_new(
         &self->inv,
-        &self->viewport, (Rect) {.ax = 25, .ay = 8, .bx = 31, .by = 19},
+        &self->viewport, (Rect) {.ax = 26, .ay = 8, .bx = 31, .by = 19},
         self,
         (Size) {.width = 3, .height = 12}
     )) < 0) {
@@ -98,16 +106,11 @@ Error Game_new(Game* self, Size win_size) {
 
     if ((err = Counter_new(
         &self->counter, &self->viewport,
-        (Rect) {.ax = 25, .ay = 5, .bx = 31, .by = 8},
+        (Rect) {.ax = 26, .ay = 5, .bx = 31, .by = 8},
         0, 5
     )) < 0) {
         return err;
     }
-
-    Mana_new(
-        &self->mana, &self->viewport, (Rect) {0},
-        150, 2000
-    );
 
     static Button buttons[4];
     memcpy(buttons, (Button[]) {{
@@ -140,7 +143,7 @@ Error Game_new(Game* self, Size win_size) {
     Buttons_new(
         &self->buttons,
         &self->viewport,
-        (Rect) {.ax = 25, .ay = 1, .bx = 31, .by = 5},
+        (Rect) {.ax = 26, .ay = 1, .bx = 31, .by = 5},
         (Size) {.width = 3, .height = 2},
         buttons, 4
     );
@@ -154,11 +157,12 @@ void Game_update(Game* self) {
 
 void Game_draw(const Game* self) {
     Land_draw(&self->land);
+    Mana_draw(&self->mana);
     Inventory_draw(&self->inv);
     Buttons_draw(&self->buttons);
     Counter_draw(&self->counter);
     DragNDrop_draw();
-    Grid_draw_lines(&self->viewport);
+    // Grid_draw_lines(&self->viewport);
 }
 
 void Game_process_event(Game* self) {
