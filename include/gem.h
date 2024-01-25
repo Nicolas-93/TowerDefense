@@ -19,16 +19,28 @@ typedef struct Gem {
 } Gem;
 
 /**
- * @brief Create a new gem
+ * @brief Create a new allocated gem
  * 
  * @param self 
  * @param grid grid
  * @param level Gem's level
+ * @return Gem* allocated gem
  */
-void Gem_new(Gem* self, Grid* grid, int level);
+Gem* Gem_new(Grid* grid, int level);
 
 /**
- * @brief Merge ``other`` into ``self``
+ * @brief Check if two gems are mergeable
+ * (same level)
+ * 
+ * @param self 
+ * @param other 
+ * @return true 
+ * @return false 
+ */
+bool Gem_is_mergeable(const Gem* self, const Gem* other);
+
+/**
+ * @brief Merge ``other`` into ``self`` and free ``other``
  * 
  * @param self Merged gem
  * @param other Gem being merged into ``self`` 

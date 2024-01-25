@@ -13,6 +13,15 @@ bool Inventory_on_gem_release(void* context, void* object, Point abs_pos) {
     if (!Grid_absolute_pos_to_relative(&inv->grid, abs_pos, &pos))
         return false;
 
+    Gem* inv_gem = Inventory_get(inv, pos);
+    if (inv_gem &&
+        Gem_is_mergeable(gem, inv_gem) &&
+        Mana_buy(inv->mana, Mana_get_gem_merging_cost())
+    ) {
+        Gem_merge(inv_gem, gem);
+        return true;
+    }
+
     if (Inventory_put(inv, gem, pos))
         return true;
 
@@ -45,12 +54,14 @@ static void _Inventory_on_grid_click(Point pos, void* data) {
     );
 }
 
-Error Inventory_new(Inventory* self, Grid* parent, Rect rect, void* game, Size size) {
+Error Inventory_new(Inventory* self, Grid* parent, Rect rect, Size size, Mana* mana, void* game) {
     *self = (Inventory) {
         .width = size.width,
         .height = size.height,
         .gems = calloc(size.width * size.height, sizeof(Gem*)),
-        .game = game
+        .nb_gems = 0,
+        .game = game,
+        .mana = mana,
     };
 
     if (self->gems == NULL)
@@ -77,7 +88,6 @@ static void _Inventory_free_gems(Inventory* self) {
             if (Inventory_get(self, pos)) {
                 Gem* gem = Inventory_pop(self, pos);
                 Gem_free(gem);
-                free(gem);
             }
         }
     }
@@ -98,10 +108,32 @@ bool Inventory_put(Inventory* self, Gem* gem, Point pos) {
         return false;
 
     gems[y][x] = gem;
+    self->nb_gems++;
 
     Gem_set_grid(gem, &self->grid);
 
     return true;
+}
+
+bool Inventory_is_full(const Inventory* self) {
+    return self->nb_gems == self->width * self->height;
+}
+
+bool Inventory_put_random(Inventory* self, Gem* gem) {
+    DECLARE_2D_VLA(gems, Gem*, self->gems, self->width);
+
+    if (Inventory_is_full(self))
+        return false;
+
+    for (int i = 0; i < self->width; i++) {
+        for (int j = 0; j < self->height; j++) {
+            if (gems[j][i]) continue;
+            if (Inventory_put(self, gem, (Point) {.x = i, .y = j}))
+                return true;
+        }
+    }
+
+    return false;
 }
 
 Gem* Inventory_pop(Inventory* self, Point pos) {
@@ -114,6 +146,7 @@ Gem* Inventory_pop(Inventory* self, Point pos) {
         return NULL;
 
     gems[y][x] = NULL;
+    self->nb_gems--;
 
     return gem;
 }

@@ -4,11 +4,18 @@
 #include "mana.h"
 #include <stdio.h>
 
+static int _Game_get_tower_cost(const Game* self) {
+    return 100 * pow(
+        2,
+        Deque_get_length(&self->land.towers) + self->land.available_towers - 3
+    );
+}
+
 static void Game_buy_tower(void* self) {
     Game* game = (Game*) self;
-    uint32_t price = 100 * pow(2, (game->land.towers.len + game->land.available_towers - 3));
-    if (Mana_have_sufficient_mana(&game->mana, price)) {
-        Mana_add(&game->mana, -price);
+    uint32_t price = _Game_get_tower_cost(game);
+
+    if (Mana_buy(&game->mana, price)) {
         game->land.available_towers++;
     }
 }
@@ -20,36 +27,43 @@ static void Game_buy_mana_pool(void* self) {
 
 static void Game_buy_gem(void* self) {
     Game* game = (Game*) self;
-    uint32_t price = 100 * pow(2, game->counter.value);
-    if (Mana_have_sufficient_mana(&game->mana, price)) {
-        Mana_add(&game->mana, -price);
-        Gem gem;
-        Gem_new(&gem, &game->land.grid, game->counter.value);
-        /* Point point = (Point) {
-            .x = 0,
-            .y = 0
-        };
-        Inventory_put(&game->inv, &gem, point); */
+    uint32_t price = Mana_get_gem_cost(game->counter.value);
 
+    if (!Inventory_is_full(&game->inv) && Mana_buy(&game->mana, price)) {
+        Gem* gem = Gem_new(&game->land.grid, game->counter.value);
+        Inventory_put_random(&game->inv, gem);
     }
 }
-static void Game_buy_gem_merging(void* self) {}
 
 static void Game_buy_tower_draw_overlay(Point pos, void* self) {
     Game* game = (Game*) self;
-    uint32_t price = 100 * pow(2, (game->land.towers.len + game->land.available_towers - 3));
-    Overlay_draw(pos, "Available: %d\nNew tower: %d mana", game->land.available_towers, price);
+
+    Overlay_draw(
+        pos, "Available: %d\nNew tower cost: %d mana",
+        game->land.available_towers,
+        _Game_get_tower_cost(game)
+    );
 }
 static void Game_buy_mana_pool_draw_overlay(Point pos, void* self) {
     Game* game = (Game*) self;
-    Overlay_draw(pos, "Mana: %d\nUpgrade mana pool: %d", game->mana.mana, (uint32_t) (500 * pow(1.4, game->mana.level)));
+
+    Overlay_draw(
+        pos,
+        "Upgrade mana pool: %d",
+        Mana_get_pool_upgrade_cost(&game->mana)
+    );
 }
 static void Game_buy_gem_draw_overlay(Point pos, void* self) {
     Game* game = (Game*) self;
-    Overlay_draw(pos, "Mana: %d\nUpgrade mana pool: %d", game->mana.mana, (uint32_t) (100 * pow(2, game->counter.value)));
-}
-static void Game_buy_gem_merging_draw_overlay(void* self) {}
 
+    Overlay_draw(pos, "Buy gem: %d", Mana_get_gem_cost(game->counter.value));
+}
+
+static void Game_buy_gem_merging_draw_overlay(Point pos, void* self) {
+    Game* game = (Game*) self;
+
+    Overlay_draw(pos, "Merge gems: %d", Mana_get_gem_cost(game->counter.value));
+}
 
 bool Game_on_gem_release(
     void* context, void* object,
@@ -57,7 +71,7 @@ bool Game_on_gem_release(
 ) {
     Game* game = (Game*) context;
     Gem* gem = (Gem*) object;
-    
+
     if (Land_on_gem_release(&game->land, gem, abs_pos))
         return true;
     else if (Inventory_on_gem_release(&game->inv, gem, abs_pos))
@@ -90,7 +104,7 @@ Error Game_new(Game* self, Size win_size) {
 
     if ((err = Mana_new(
         &self->mana, &self->viewport, (Rect) {.ax = 0, .ay = 0, .bx = 25, .by = 0},
-        150, 2000
+        500, 2000
     )) < 0) {
         return err;
     }
@@ -98,8 +112,9 @@ Error Game_new(Game* self, Size win_size) {
     if ((err = Inventory_new(
         &self->inv,
         &self->viewport, (Rect) {.ax = 26, .ay = 8, .bx = 31, .by = 19},
-        self,
-        (Size) {.width = 3, .height = 12}
+        (Size) {.width = 3, .height = 12},
+        &self->mana,
+        self
     )) < 0) {
         return err;
     }
@@ -134,7 +149,7 @@ Error Game_new(Game* self, Size win_size) {
             }
         },{ .icon = IMAGE_GEM_MERGING,
             .callback = {
-                .on_click = Game_buy_gem_merging,
+                .on_hover = Game_buy_gem_merging_draw_overlay,
                 .context = self,
             }
         },

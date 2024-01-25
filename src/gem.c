@@ -11,7 +11,7 @@ const char* GEM_TYPES_STR[] = {
     [MIXED]     = "Mixed",
 };
 
-void Gem_new(Gem* self, Grid* grid, int level) {
+Gem* Gem_new(Grid* grid, int level) {
     Color color = Color_new_random();
     GemType type = 0;
     
@@ -25,16 +25,24 @@ void Gem_new(Gem* self, Grid* grid, int level) {
         type = PYRO;
     }
 
+    Gem* self = malloc(sizeof(Gem));
+
     *self = (Gem) {
         .color = color,
         .type = type,
         .level = level,
         .grid = grid,
     };
+
+    return self;
+}
+
+bool Gem_is_mergeable(const Gem* self, const Gem* other) {
+    return self->level == other->level;
 }
 
 void Gem_merge(Gem* self, Gem* other) {
-    assert(self->level == other->level);
+    assert(Gem_is_mergeable(self, other));
 
     ColorHSV new_color = {
         .h = (self->color.hsv.h + other->color.hsv.h) / 2,
@@ -44,6 +52,8 @@ void Gem_merge(Gem* self, Gem* other) {
 
     self->color.hsv = new_color;
     self->level++;
+
+    Gem_free(other);
 }
 
 void Gem_draw_grid(Gem* self, Point pos_rel) {
@@ -80,4 +90,5 @@ void Gem_set_grid(Gem* self, Grid* grid) {
 
 void Gem_free(Gem* self) {
     *self = (Gem) {0};
+    free(self);
 }

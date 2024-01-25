@@ -18,7 +18,8 @@ Error Mana_new(Mana* self, Grid* parent, Rect rect, uint32_t initial_mana, uint3
 }
 
 ManaError Mana_add(Mana* self, int amount) {
-    self->mana += clamp(amount, 0, self->max_mana);
+    self->mana += amount;
+    self->mana = clamp(self->mana, 0, self->max_mana);
 
     if (self->mana <= 0)
         return MANA_BANKRUPT;
@@ -34,8 +35,29 @@ bool Mana_have_sufficient_mana(const Mana* self, uint32_t amount) {
     return self->mana >= amount;
 }
 
+bool Mana_buy(Mana* self, uint32_t amount) {
+    if (!Mana_have_sufficient_mana(self, amount))
+        return false;
+
+    Mana_add(self, -amount);
+
+    return true;
+}
+
+int Mana_get_pool_upgrade_cost(const Mana* self) {
+    return 500 * pow(1.4, self->level);
+}
+
+int Mana_get_gem_cost(int level) {
+    return 100 * pow(2, level);
+}
+
+int Mana_get_gem_merging_cost(void) {
+    return 100;
+}
+
 ManaError Mana_upgrade(Mana* self) {
-    uint32_t price = 500 * pow(1.4, self->level);
+    uint32_t price = Mana_get_pool_upgrade_cost(self);
 
     if (!Mana_have_sufficient_mana(self, price))
         return false;

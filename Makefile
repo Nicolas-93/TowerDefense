@@ -5,7 +5,7 @@ INC_DIR=include
 DOC_DIR=doc
 INCLUDE=-I$(INC_DIR)
 LIBS=-lm -lMLV
-CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -MMD -Wenum-conversion -Wall -pedantic -std=c17 -O2 -DNDEBUG
+CFLAGS=-fdiagnostics-color=always -Wstrict-prototypes -MMD -Wenum-conversion -Wall -pedantic -std=c17 -Og -g
 TAR_NAME=SEBAN_SOUIOU_TowerDefense
 TAR_CONTENT=$(SRC_DIR)/ $(INC_DIR)/ $(DOC_DIR)/ $(BUILD_DIR)/ assets/ Makefile Doxyfile .gitignore
 EXEC=td

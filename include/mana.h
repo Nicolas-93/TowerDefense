@@ -54,11 +54,44 @@ ManaError Mana_add(Mana* self, int amount);
 bool Mana_have_sufficient_mana(const Mana* self, uint32_t amount);
 
 /**
+ * @brief Check if the player hava sufficient mana to spend ``amount`` mana.
+ * 
+ * @param self Mana object
+ * @param amount amount of mana to spend
+ * @return true Mana was spend
+ * @return false Mana was not spend (not enough mana)
+ */
+bool Mana_buy(Mana* self, uint32_t amount);
+
+/**
  * @brief Upgrade the mana level
  * 
  * @param self Mana object
  */
 ManaError Mana_upgrade(Mana* self);
+
+/**
+ * @brief Get the cost of the mana pool upgrade
+ * 
+ * @param self Mana object
+ * @return uint cost of the mana pool upgrade
+ */
+int Mana_get_pool_upgrade_cost(const Mana* self);
+
+/**
+ * @brief Get the cost of a gem
+ * 
+ * @param level level of the gem
+ * @return int 
+ */
+int Mana_get_gem_cost(int level);
+
+/**
+ * @brief Get the cost of merging two gems
+ * 
+ * @return int 
+ */
+int Mana_get_gem_merging_cost(void);
 
 /**
  * @brief Draw the mana bar, showing the current mana level
