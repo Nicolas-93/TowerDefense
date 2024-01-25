@@ -45,7 +45,7 @@ static void _Inventory_on_grid_click(Point pos, void* data) {
     );
 }
 
-Error Inventory_new(Inventory* self, Grid* parent, void* game, Size size) {
+Error Inventory_new(Inventory* self, Grid* parent, Rect rect, void* game, Size size) {
     *self = (Inventory) {
         .width = size.width,
         .height = size.height,
@@ -59,7 +59,7 @@ Error Inventory_new(Inventory* self, Grid* parent, void* game, Size size) {
     if (Grid_new(
         &self->grid,
         self->width, self->height, 0.9,
-        parent /*10x6*/, (Rect) {.ax = 8, .ay = 2, .bx = 9, .by = 5},
+        parent, rect,
         true, MLV_COLOR_WHITE, MLV_COLOR_BLACK
     ) < 0) {
         return ERR_ALLOC;

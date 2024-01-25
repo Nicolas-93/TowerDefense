@@ -31,12 +31,13 @@ typedef struct Land {
  * 
  * @param self 
  * @param parent Parent grid
+ * @param rectn Position of the land on the parent grid
  * @param game Parent game object
  * @param width 
  * @param height 
  * @return Error 
  */
-Error Land_new(Land* self, Grid* parent, void* game, uint16_t width, uint16_t height);
+Error Land_new(Land* self, Grid* parent, Rect rect, void* game, uint16_t width, uint16_t height);
 
 /**
  * @brief Add a tower to the land

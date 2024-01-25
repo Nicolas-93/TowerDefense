@@ -69,7 +69,7 @@ Error Game_new(Game* self, Size win_size) {
     Error err = 0;
     
     if ((err = Grid_new(
-        &self->viewport, 10, 6, 0.95,
+        &self->viewport, 32, 20, 0.95,
         NULL,
         (Rect) {.ax = 0, .ay = 0, .bx = win_size.width, .by = win_size.height},
         true,
@@ -78,27 +78,35 @@ Error Game_new(Game* self, Size win_size) {
         return err;
     }
 
-    if ((err = Land_new(&self->land, &self->viewport, self, 28, 22)) < 0) {
+    if ((err = Land_new(
+        &self->land,
+        &self->viewport, (Rect) {.ax = 0, .ay = 2, .bx = 25, .by = 19},
+        self, 28, 22
+    )) < 0) {
         return err;
     }
     // Path_print(&self->land.path);
 
     if ((err = Inventory_new(
-        &self->inv, &self->viewport, self, (Size) {.width = 3, .height = 12}
-    ) < 0)) {
+        &self->inv,
+        &self->viewport, (Rect) {.ax = 25, .ay = 8, .bx = 31, .by = 19},
+        self,
+        (Size) {.width = 3, .height = 12}
+    )) < 0) {
         return err;
     }
 
     if ((err = Counter_new(
         &self->counter, &self->viewport,
-        (Rect) {.ax = 8, .ay = 1, .bx = 9, .by = 1},
+        (Rect) {.ax = 25, .ay = 5, .bx = 31, .by = 8},
         0, 5
     )) < 0) {
         return err;
     }
 
     Mana_new(
-        &self->mana, 150, 2000
+        &self->mana, &self->viewport, (Rect) {0},
+        150, 2000
     );
 
     static Button buttons[4];
@@ -132,7 +140,7 @@ Error Game_new(Game* self, Size win_size) {
     Buttons_new(
         &self->buttons,
         &self->viewport,
-        (Rect) {.ax = 8, .ay = 0, .bx = 9, .by = 0},
+        (Rect) {.ax = 25, .ay = 1, .bx = 31, .by = 5},
         (Size) {.width = 3, .height = 2},
         buttons, 4
     );
@@ -150,7 +158,7 @@ void Game_draw(const Game* self) {
     Buttons_draw(&self->buttons);
     Counter_draw(&self->counter);
     DragNDrop_draw();
-    // Grid_draw_lines(&self->viewport);
+    Grid_draw_lines(&self->viewport);
 }
 
 void Game_process_event(Game* self) {

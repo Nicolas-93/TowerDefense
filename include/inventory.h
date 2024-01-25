@@ -19,10 +19,11 @@ typedef struct Inventory {
  * 
  * @param self Inventory object to initialize
  * @param parent Parent grid
+ * @param rect Position of the inventory in the parent grid
  * @param game Parent game context (used for dragndrop)
  * @param size Width and height (should be 3x12)
  */
-Error Inventory_new(Inventory* self, Grid* parent, void* game, Size size);
+Error Inventory_new(Inventory* self, Grid* parent, Rect rect, void* game, Size size);
 
 /**
  * @brief Destroy the Inventory object

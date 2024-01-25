@@ -66,7 +66,7 @@ static void _Land_on_grid_click(Point pos, void* data) {
     }
 }
 
-Error Land_new(Land* self, Grid* parent, void* game, uint16_t width, uint16_t height) {
+Error Land_new(Land* self, Grid* parent, Rect rect, void* game, uint16_t width, uint16_t height) {
     *self = (Land) {
         .wave_counter = 0,
         .game = game,
@@ -79,7 +79,7 @@ Error Land_new(Land* self, Grid* parent, void* game, uint16_t width, uint16_t he
     Grid_new(
         &self->grid,
         width, height, 1,
-        parent, (Rect) {.ax = 0, .ay = 0, .bx = 7, .by = parent->height - 1},
+        parent, rect,
         true, MLV_COLOR_WHITE, MLV_COLOR_BLACK
     );
     Grid_set_on_click_handler(&self->grid, _Land_on_grid_click, self);
