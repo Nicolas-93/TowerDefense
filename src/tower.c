@@ -150,6 +150,5 @@ void Tower_free(Tower* self) {
     if (Tower_has_gem(self)) {
         Gem_free(self->gem);
     }
-    free(self->gem);
     *self = (Tower) {0};
 }

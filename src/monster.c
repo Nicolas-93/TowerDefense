@@ -1,5 +1,7 @@
 #include "monster.h"
 #include "image.h"
+#include "overlay.h"
+#include "gfxutils.h"
 #include <math.h>
 
 static void _Monster_set_next_traj(Monster* self) {
@@ -58,7 +60,7 @@ Error Monster_add_future_shot(Monster* self, const Shot* shot) {
  * @return false Still alive
  */
 static bool _Monster_suffer_damages(Monster* self, const Shot* shot) {
-    uint32_t damages = 1 * pow(2, shot->gem.level) * (1 - cos(self->color.hsv.h - shot->gem.color.hsv.h) / 2);
+    uint32_t damages = 10 * pow(2, shot->gem.level) * (1 - cos(self->color.hsv.h - shot->gem.color.hsv.h) / 2);
     if (damages > self->current_hp)
         return true;
     self->current_hp -= damages;
@@ -81,7 +83,7 @@ static Error _Monster_anim_shots(Monster* self) {
         Shot_update(shot);
         if (Shot_has_reached_target(shot)) {
             if (_Monster_suffer_damages(self, shot)) {
-                err = INFO_MONSETR_IS_DEAD;
+                err = INFO_MONSTER_IS_DEAD;
                 break;
             }
             Deque_remove(&self->future_shots, entry);
@@ -124,7 +126,7 @@ Error Monster_update(Monster* self) {
     if (!Timer_is_over(&self->start_timer))
         return 0;
 
-    if ((err = _Monster_anim_shots(self)) == INFO_MONSETR_IS_DEAD) {
+    if ((err = _Monster_anim_shots(self)) == INFO_MONSTER_IS_DEAD) {
         return err;
     }
     if ((err = _Monster_move(self)) == INFO_MONSTER_BACK_TO_SPAWN) {
@@ -135,10 +137,13 @@ Error Monster_update(Monster* self) {
 }
 
 void Monster_draw(const Monster* self) {
+    Point pos = self->traj.pos;
+    const double radius = self->grid->cell_width / 3;
+
     MLV_draw_filled_circle(
-        self->traj.pos.x,
-        self->traj.pos.y,
-        self->grid->cell_width / 2,
+        pos.x,
+        pos.y,
+        radius,
         self->color.mlvrgb
     );
 
@@ -147,6 +152,31 @@ void Monster_draw(const Monster* self) {
     DEQUE_FOREACH(entry, &self->future_shots) {
         Shot* shot = Deque_get_elem(entry);
         Shot_draw(shot);
+    }
+
+    const float hp_bar_width = 4 * radius;
+    const float percent = (double) self->current_hp / self->initial_hp;
+
+    MLV_Color hp_bar_color = percent < 0.5 ?
+                                (percent < 0.2 ?
+                                    MLV_COLOR_RED1 : MLV_COLOR_ORANGE1)
+                                : MLV_COLOR_GREEN1;
+
+    Gfx_draw_completion_bar(
+        (Rect) {
+            .a = (Point) {.x = pos.x - hp_bar_width / 2, .y = pos.y - radius - 10},
+            .b = (Point) {.x = pos.x + hp_bar_width / 2, .y = pos.y - radius - 5}
+        },
+        percent,
+        MLV_rgba(0, 0, 0, 0),
+        hp_bar_color
+    );
+
+    if (Point_on_circle(Event_get().mouse, pos, radius)) {
+        Overlay_draw(
+            (Point) {.x = pos.x, .y = pos.y},
+            "HP : %d/%d", self->current_hp, self->initial_hp
+        );
     }
 }
 

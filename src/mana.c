@@ -1,6 +1,7 @@
 #include "mana.h"
 #include "error.h"
 #include "utils.h"
+#include "gfxutils.h"
 #include <MLV/MLV_all.h>
 
 Error Mana_new(Mana* self, Grid* parent, Rect rect, uint32_t initial_mana, uint32_t max_mana) {
@@ -72,18 +73,10 @@ ManaError Mana_upgrade(Mana* self) {
 void Mana_draw(const Mana* self) {
     Rect rect = self->rect;
 
-    // background
-    MLV_draw_filled_rectangle(
-        rect.a.x, rect.a.y,
-        Rect_get_width(rect), Rect_get_height(rect),
-        MLV_rgba(44, 39, 68, 255)
-    );
-
-    // Draw completed
-    MLV_draw_filled_rectangle(
-        rect.a.x, rect.a.y,
-        (Rect_get_width(rect) * self->mana) / self->max_mana,
-        Rect_get_height(rect),
+    Gfx_draw_completion_bar(
+        rect,
+        (float) self->mana / self->max_mana,
+        MLV_rgba(44, 39, 68, 255),
         MLV_rgba(120, 182, 250, 255)
     );
 
