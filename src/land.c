@@ -66,7 +66,7 @@ static void _Land_on_grid_click(Point pos, void* data) {
     }
 }
 
-Error Land_new(Land* self, Grid* parent, Rect rect, void* game, uint16_t width, uint16_t height) {
+Error Land_new(Land* self, Grid* parent, Rect rect, Game* game, uint16_t width, uint16_t height) {
     *self = (Land) {
         .wave_counter = 0,
         .game = game,
@@ -102,9 +102,6 @@ static void _Land_set_grid_color(Land* self) {
     Grid_get_cell(&self->grid, Path_get_start(&self->path))->filled_color = MLV_COLOR_GREEN;
     Grid_get_cell(&self->grid, Path_get_end(&self->path))->filled_color = MLV_COLOR_RED;
 }
-
-
-
 
 Error Land_add_tower(Land* self, Tower* tower) {
     assert(tower);
@@ -185,8 +182,25 @@ void Land_process_event(Land* self) {
 
 void Land_update(Land* self) {
     DequeNode* entry;
-    DEQUE_FOREACH(entry, &self->monsters) {
-        Monster_update(Deque_get_elem(entry));
+    DequeNode* tmp;
+    Error err = 0;
+    DEQUE_FOREACH_SAFE(entry, &self->monsters, tmp) {
+        Monster* monster = Deque_get_elem(entry);
+        err = Monster_update(monster);
+        if (err == INFO_MONSTER_IS_DEAD) {
+            Mana_add(
+                &self->game->mana,
+                Mana_get_killed_monster_bonus(&self->game->mana, monster->initial_hp)
+            );
+            Monster_free(monster);
+            Deque_remove(&self->monsters, entry);
+        }
+        else if (err == INFO_MONSTER_BACK_TO_SPAWN) {
+            Mana_add(
+                &self->game->mana,
+                -Mana_get_monster_back_to_spawn_malus(&self->game->mana, monster->initial_hp)
+            );
+        }
     }
     DEQUE_FOREACH(entry, &self->towers) {
         Tower_update(Deque_get_elem(entry), &self->monsters);
@@ -198,7 +212,7 @@ void Land_draw(const Land* self) {
     Grid_draw_lines(&self->grid);
     
     DequeNode* entry;
-    DEQUE_FOREACH(entry, &self->monsters) {
+    DEQUE_FOREACH_REVERSE(entry, &self->monsters) {
         Monster_draw((Monster*) Deque_get_elem(entry));
     }
     DEQUE_FOREACH(entry, &self->towers) {

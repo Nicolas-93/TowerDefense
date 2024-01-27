@@ -68,7 +68,7 @@ const char* Gem_get_type_str(Gem* self) {
 void Gem_draw_dragndrop(void* self, Point pos_abs) {
     Gem* gem = (Gem*) self;
 
-    double radius = gem->grid->cell_width / 3;
+    double radius = gem->grid->cell_width / 3.0;
 
     MLV_draw_filled_circle(
         pos_abs.x, pos_abs.y,

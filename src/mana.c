@@ -57,6 +57,14 @@ int Mana_get_gem_merging_cost(void) {
     return 100;
 }
 
+int Mana_get_killed_monster_bonus(const Mana* self, int monster_initial_hp) {
+    return (monster_initial_hp * 0.1) * pow(1.3, self->level);
+}
+
+int Mana_get_monster_back_to_spawn_malus(const Mana* self, int monster_initial_hp) {
+    return (monster_initial_hp * 0.15) * pow(1.3, self->level);
+}
+
 ManaError Mana_upgrade(Mana* self) {
     uint32_t price = Mana_get_pool_upgrade_cost(self);
 

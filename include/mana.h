@@ -94,6 +94,24 @@ int Mana_get_gem_cost(int level);
 int Mana_get_gem_merging_cost(void);
 
 /**
+ * @brief Get bonus amount mana when a monster is killed
+ * 
+ * @param self Mana object
+ * @param monster_initial_hp initial hp of the monster 
+ * @return int 
+ */
+int Mana_get_killed_monster_bonus(const Mana* self, int monster_initial_hp);
+
+/**
+ * @brief Get the malus amount mana when a monster is back to spawn
+ * 
+ * @param self Mana object
+ * @param monster_initial_hp initial hp of the monster
+ * @return int 
+ */
+int Mana_get_monster_back_to_spawn_malus(const Mana* self, int monster_initial_hp);
+
+/**
  * @brief Draw the mana bar, showing the current mana level
  * (current mana / max mana) as a progress bar.
  * And print the current and mana level.

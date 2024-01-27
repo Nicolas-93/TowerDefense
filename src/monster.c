@@ -159,7 +159,8 @@ void Monster_draw(const Monster* self) {
 
     MLV_Color hp_bar_color = percent < 0.5 ?
                                 (percent < 0.2 ?
-                                    MLV_COLOR_RED1 : MLV_COLOR_ORANGE1)
+                                    MLV_COLOR_RED1
+                                    : MLV_COLOR_ORANGE1)
                                 : MLV_COLOR_GREEN1;
 
     Gfx_draw_completion_bar(

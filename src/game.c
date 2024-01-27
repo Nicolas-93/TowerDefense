@@ -104,7 +104,7 @@ Error Game_new(Game* self, Size win_size) {
 
     if ((err = Mana_new(
         &self->mana, &self->viewport, (Rect) {.ax = 0, .ay = 0, .bx = 25, .by = 0},
-        500, 2000
+        2000, 2000
     )) < 0) {
         return err;
     }

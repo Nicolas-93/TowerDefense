@@ -14,6 +14,8 @@
 
 #define H_PARAMETER 100
 
+typedef struct Game Game;
+
 typedef struct Land {
     Path path;              /*< Monsters path */
     Deque towers;           /*< Placed towers */
@@ -22,9 +24,8 @@ typedef struct Land {
     uint16_t wave_counter;  /*< Monsters waves counter */
     Grid grid;              /*< Land's grid */
     Timer next_wave_timer;  /*< Time before next wave */
-    void* game;             /*< Parent game context, used for dragndrop */
+    Game* game;             /*< Parent game context, used for dragndrop */
 } Land;
-
 
 /**
  * @brief Create a new Land object, with a given width and height.
@@ -37,7 +38,7 @@ typedef struct Land {
  * @param height 
  * @return Error 
  */
-Error Land_new(Land* self, Grid* parent, Rect rect, void* game, uint16_t width, uint16_t height);
+Error Land_new(Land* self, Grid* parent, Rect rect, Game* game, uint16_t width, uint16_t height);
 
 /**
  * @brief Add a tower to the land
