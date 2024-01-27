@@ -53,6 +53,10 @@ void Gem_merge(Gem* self, Gem* other) {
     self->color.hsv = new_color;
     self->level++;
 
+    if (self->type != other->type) {
+        self->type = MIXED;
+    }
+
     Gem_free(other);
 }
 
