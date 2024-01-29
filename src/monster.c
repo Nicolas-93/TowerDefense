@@ -2,6 +2,8 @@
 #include "image.h"
 #include "overlay.h"
 #include "gfxutils.h"
+#include "utils.h"
+#include "effects.h"
 #include <math.h>
 
 static void _Monster_set_next_traj(Monster* self) {
@@ -40,7 +42,7 @@ void Monster_new(
         .start_timer = start_timer,
         .traj = Traject_new_without_dir_and_pos(grid->cell_width, speed),
     };
-    self->current_hp = self->initial_hp; // Should be done in the initializer list but it doesn't work
+    self->current_hp = self->initial_hp;
 
     _Monster_set_next_traj(self);
     Deque_init(&self->future_shots, sizeof(Shot));
@@ -48,6 +50,10 @@ void Monster_new(
 
 Error Monster_add_future_shot(Monster* self, const Shot* shot) {
     return Deque_append(&self->future_shots, shot) == ERR_DEQUE_ALLOC ? ERR_ALLOC : 0;
+}
+
+static inline int _Monster_get_base_damage(const Monster* self, const Shot* shot) {
+    return 10 * pow(2, shot->gem.level) * (1 - cos(self->color.hsv.h - shot->gem.color.hsv.h) / 2);
 }
 
 /**
@@ -60,10 +66,13 @@ Error Monster_add_future_shot(Monster* self, const Shot* shot) {
  * @return false Still alive
  */
 static bool _Monster_suffer_damages(Monster* self, const Shot* shot) {
-    uint32_t damages = 10 * pow(2, shot->gem.level) * (1 - cos(self->color.hsv.h - shot->gem.color.hsv.h) / 2);
+    uint32_t damages = _Monster_get_base_damage(self, shot);
+
     if (damages > self->current_hp)
         return true;
-    self->current_hp -= damages;
+
+    self->current_hp = clamp(self->current_hp - damages, 0, self->initial_hp);
+
     return false;
 }
 
@@ -86,6 +95,15 @@ static Error _Monster_anim_shots(Monster* self) {
                 err = INFO_MONSTER_IS_DEAD;
                 break;
             }
+            Effect_new(
+                &self->effect,
+                _Monster_get_base_damage(self, shot),
+                Traject_get_speed(&self->traj),
+                self->last_gem_impact,
+                shot->gem.type
+            );
+            self->last_gem_impact = shot->gem.type;
+
             Deque_remove(&self->future_shots, entry);
         }
     }
@@ -184,4 +202,24 @@ void Monster_draw(const Monster* self) {
 void Monster_free(Monster* self) {
     Deque_free(&self->future_shots);
     *self = (Monster) {0};
+}
+
+Point Monster_get_pos(const Monster* self) {
+    return self->traj.pos;
+}
+
+int Monster_get_hp(const Monster* self) {
+    return self->current_hp;
+}
+
+void Monster_set_speed(Monster* self, double speed) {
+    Traject_set_speed(&self->traj, speed);
+}
+
+Error Monster_apply_damage(Monster* self, double damage) {
+    self->current_hp = clamp(self->current_hp - damage, 0, self->initial_hp);
+    if (self->current_hp <= 0) {
+        return INFO_MONSTER_IS_DEAD;
+    }
+    return 0;
 }

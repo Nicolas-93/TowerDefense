@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "path.h"
 #include "grid.h"
+#include "effects.h"
 
 typedef struct Monster {
     Traject traj;               /*< Trajectory */
@@ -22,6 +23,7 @@ typedef struct Monster {
     Timer timer;                /*< Timer for gems effects */
     Timer start_timer;          /*< Timer to wait before starting */
     Deque future_shots;         /*< Shots he will sufffer */
+    EffectUnion effect;         /*< Effect applied to the monster */
 } Monster;
 
 /**
@@ -82,5 +84,39 @@ void Monster_draw(const Monster* self);
  * @param self 
  */
 void Monster_free(Monster* self);
+
+/**
+ * @brief Get the monster's position.
+ * 
+ * @param self 
+ * @return Point 
+ */
+Point Monster_get_pos(const Monster* self);
+
+/**
+ * @brief Set the monster's speed.
+ * 
+ * @param self 
+ * @param speed 
+ */
+void Monster_set_speed(Monster* self, double speed);
+
+/**
+ * @brief Apply damages to the monster.
+ * 
+ * @param self 
+ * @param damage 
+ * @return true Monster is dead
+ * @return false Monster is still alive
+ */
+Error Monster_apply_damage(Monster* self, double damage);
+
+/**
+ * @brief Get the monster's HP.
+ * 
+ * @param self 
+ * @return int32_t 
+ */
+int Monster_get_hp(const Monster* self);
 
 #endif

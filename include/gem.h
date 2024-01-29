@@ -5,10 +5,11 @@
 #include "grid.h"
 
 typedef enum GemType {
-    PYRO = 1,
-    DENDRO = 2,
-    HYDRO = 3,
-    MIXED = 4,
+    GEM_NONE = 0,
+    GEM_PYRO = 1,
+    GEM_DENDRO = 2,
+    GEM_HYDRO = 3,
+    GEM_MIXED = 4,
 } GemType;
 
 typedef struct Gem {

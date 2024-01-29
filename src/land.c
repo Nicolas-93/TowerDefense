@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "dragndrop.h"
 #include "game.h"
+#include "effects.h"
 
 static void _Land_set_grid_color(Land* self);
 
@@ -201,6 +202,7 @@ void Land_update(Land* self) {
                 -Mana_get_monster_back_to_spawn_malus(&self->game->mana, monster->initial_hp)
             );
         }
+        Effect_update(entry, &self->monsters);
     }
     DEQUE_FOREACH(entry, &self->towers) {
         Tower_update(Deque_get_elem(entry), &self->monsters);

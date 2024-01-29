@@ -4,11 +4,11 @@
 #include <assert.h>
 
 const char* GEM_TYPES_STR[] = {
-    [0]         = "None",
-    [PYRO]      = "Pyro",
-    [DENDRO]    = "Dendro",
-    [HYDRO]     = "Hydro",
-    [MIXED]     = "Mixed",
+    [GEM_NONE]      = "None",
+    [GEM_PYRO]      = "Pyro",
+    [GEM_DENDRO]    = "Dendro",
+    [GEM_HYDRO]     = "Hydro",
+    [GEM_MIXED]     = "Mixed",
 };
 
 Gem* Gem_new(Grid* grid, int level) {
@@ -16,13 +16,13 @@ Gem* Gem_new(Grid* grid, int level) {
     GemType type = 0;
     
     if (color.hsv.h >= 90 && color.hsv.h <= 150) {
-        type = DENDRO;
+        type = GEM_DENDRO;
     }
     else if (color.hsv.h >= 210 && color.hsv.h <= 270) {
-        type = HYDRO;
+        type = GEM_HYDRO;
     }
     else {
-        type = PYRO;
+        type = GEM_PYRO;
     }
 
     Gem* self = malloc(sizeof(Gem));
@@ -54,7 +54,7 @@ void Gem_merge(Gem* self, Gem* other) {
     self->level++;
 
     if (self->type != other->type) {
-        self->type = MIXED;
+        self->type = GEM_MIXED;
     }
 
     Gem_free(other);
