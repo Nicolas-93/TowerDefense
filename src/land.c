@@ -42,10 +42,8 @@ static void _Land_on_gem_release_failure(
 
 static void _Land_on_grid_click(Point pos, void* data) {
     Land* self = (Land*) data;
-    fprintf(stderr, "Grid event at (%f, %f)\n", pos.x, pos.y);
 
     if (Land_is_occupied(self, pos)) {
-        fprintf(stderr, "Case already used\n");
         Tower* tower;
 
         if ((tower = Land_get_tower(self, pos)) != NULL && Tower_has_gem(tower)) {
@@ -85,7 +83,7 @@ Error Land_new(Land* self, Grid* parent, Rect rect, Game* game, uint16_t width, 
     );
     Grid_set_on_click_handler(&self->grid, _Land_on_grid_click, self);
     _Land_set_grid_color(self);
-    Land_new_random_monster_wave(self);
+    //Land_new_random_monster_wave(self);
 
     return 0;
 }
@@ -185,6 +183,13 @@ void Land_update(Land* self) {
     DequeNode* entry;
     DequeNode* tmp;
     Error err = 0;
+
+    if (Timer_is_over(&self->next_wave_timer)) {
+        Land_new_random_monster_wave(self);
+        self->wave_counter++;
+        self->next_wave_timer = Timer_new_ms(35000);
+    }
+
     DEQUE_FOREACH_SAFE(entry, &self->monsters, tmp) {
         Monster* monster = Deque_get_elem(entry);
         err = Monster_update(monster);
