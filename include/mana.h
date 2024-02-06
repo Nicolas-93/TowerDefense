@@ -9,8 +9,8 @@
 #include "geom.h"
 
 typedef struct Mana {
-    uint32_t mana;
-    uint32_t max_mana;
+    int mana;
+    int max_mana;
     uint32_t level;
     Rect rect;
     Grid* grid;
@@ -32,7 +32,7 @@ typedef enum ManaError {
  * @return true if the player have mana
  * @return false if the player don't have mana
  */
-Error Mana_new(Mana* self, Grid* parent, Rect rect, uint32_t initial_mana, uint32_t max_mana);
+Error Mana_new(Mana* self, Grid* parent, Rect rect, int initial_mana, int max_mana);
 
 /**
  * @brief Add or remove mana to the player
@@ -119,5 +119,13 @@ int Mana_get_monster_back_to_spawn_malus(const Mana* self, int monster_initial_h
  * @param self 
  */
 void Mana_draw(const Mana* self);
+
+/**
+ * @brief Get the current mana level
+ * 
+ * @param self 
+ * @return int 
+ */
+int Mana_get_value(const Mana* self);
 
 #endif

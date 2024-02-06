@@ -4,7 +4,7 @@
 #include "gfxutils.h"
 #include <MLV/MLV_all.h>
 
-Error Mana_new(Mana* self, Grid* parent, Rect rect, uint32_t initial_mana, uint32_t max_mana) {
+Error Mana_new(Mana* self, Grid* parent, Rect rect, int initial_mana, int max_mana) {
     *self = (Mana) {
         .level = 0,
         .mana = initial_mana,
@@ -77,6 +77,9 @@ ManaError Mana_upgrade(Mana* self) {
     return Mana_add(self, -price);
 }
 
+int Mana_get_value(const Mana* self) {
+    return self->mana;
+}
 
 void Mana_draw(const Mana* self) {
     Rect rect = self->rect;
