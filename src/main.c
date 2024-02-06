@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    while (RUNNING) {
+    while (!Game_is_game_over(&game) && RUNNING) {
         Clock_update();
         Event_pop_event();
         MLV_clear_window(MLV_COLOR_GRAY50);
@@ -45,6 +45,10 @@ int main(int argc, char *argv[]) {
 
         MLV_delay_according_to_frame_rate();
     }
+
+    Game_draw_game_over(&game);
+    MLV_update_window();
+    MLV_wait_milliseconds(5000);
 
     Game_free(&game);
     Image_free();

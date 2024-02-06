@@ -166,6 +166,10 @@ Error Game_new(Game* self, Size win_size) {
     return 0;
 }
 
+bool Game_is_game_over(const Game* self) {
+    return Mana_get_value(&self->mana) <= 0;
+}
+
 void Game_update(Game* self) {
     Land_update(&self->land);
 }
@@ -194,4 +198,16 @@ void Game_free(Game* self) {
     Land_free(&self->land);
     Grid_free(&self->viewport);
     Buttons_free(&self->buttons);
+}
+
+void Game_draw_game_over(const Game* self) {
+    Rect rect = self->mana.rect;
+    MLV_draw_text_box(
+        rect.a.x, rect.a.y,
+        Rect_get_width(rect), Rect_get_height(rect),
+        "Game Over",
+        15,
+        MLV_COLOR_RED, MLV_COLOR_WHITE, MLV_COLOR_BLACK,
+        MLV_TEXT_CENTER, MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER
+    );
 }

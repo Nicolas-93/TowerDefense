@@ -67,4 +67,20 @@ bool Game_on_gem_release(
  */
 void Game_free(Game* self);
 
+/**
+ * @brief Check if the game is over
+ * 
+ * @param self Game object
+ * @return true 
+ * @return false 
+ */
+bool Game_is_game_over(const Game* self);
+
+/**
+ * @brief Draw the game over screen
+ * 
+ * @param self 
+ */
+void Game_draw_game_over(const Game* self);
+
 #endif
