@@ -200,6 +200,7 @@ void Land_update(Land* self) {
             );
             Monster_free(monster);
             Deque_remove(&self->monsters, entry);
+            continue;
         }
         else if (err == INFO_MONSTER_BACK_TO_SPAWN) {
             Mana_add(

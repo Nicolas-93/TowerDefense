@@ -39,6 +39,9 @@ static void _apply_neighbours_damage(
     DequeNode* tmp;
     DEQUE_FOREACH_SAFE(node, monsters, tmp) {
         Monster* neighbour = Deque_get_elem(node);
+        if (neighbour == monster) {
+            continue;
+        }
         if (Vector2D_dist(Monster_get_pos(monster), Monster_get_pos(neighbour)) <= range) {
             int value = percent ? damage * Monster_get_hp(neighbour) : damage;
             _apply_damage(
@@ -81,8 +84,8 @@ static bool _Dendro_apply_periodic_damage(Effect* self, DequeNode* monster, Dequ
     DendroEffect* dendro = (DendroEffect*) self;
 
     if (Timer_is_over(&dendro->next_damage)) {
-        _apply_damage(damage, monster, monsters);
         dendro->next_damage = Timer_new_ms(500);
+        _apply_damage(damage, monster, monsters);
     }
 
     return false;
