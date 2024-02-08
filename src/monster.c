@@ -223,3 +223,7 @@ Error Monster_apply_damage(Monster* self, double damage) {
     }
     return 0;
 }
+
+bool Monster_is_dead(const Monster* self) {
+    return Monster_get_hp(self) <= 0;
+}

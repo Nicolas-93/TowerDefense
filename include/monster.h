@@ -114,9 +114,18 @@ Error Monster_apply_damage(Monster* self, double damage);
 /**
  * @brief Get the monster's HP.
  * 
- * @param self 
- * @return int32_t 
+ * @param self Monster object
+ * @return int32_t Monster's HP
  */
 int Monster_get_hp(const Monster* self);
+
+/**
+ * @brief Check if the monster is dead.
+ * 
+ * @param self Monster object
+ * @return true is dead
+ * @return false is still alive
+ */
+bool Monster_is_dead(const Monster* self);
 
 #endif
