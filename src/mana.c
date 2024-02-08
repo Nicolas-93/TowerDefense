@@ -33,7 +33,7 @@ ManaError Mana_add(Mana* self, int amount) {
 }
 
 bool Mana_have_sufficient_mana(const Mana* self, uint32_t amount) {
-    return self->mana >= amount;
+    return self->mana > amount;
 }
 
 bool Mana_buy(Mana* self, uint32_t amount) {
