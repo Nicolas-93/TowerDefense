@@ -8,7 +8,7 @@ Pour compiler le projet, il suffit de lancer la commande `make` à la racine du 
 
 Vous pouvez également lancer la commande `make clean` pour supprimer les fichiers objets, ou `make distclean` pour supprimer également l'exécutable.
 
-## Utilisation
+## Lancement
 
 Pour lancer le programme, vous pouvez utiliser la commande `./bin/td` depuis la racine du projet (nécessaire pour le chargement correct des icônes).
 
@@ -25,6 +25,22 @@ Par exemple :
 ```shell
 ./bin/td --window=500x500
 ```
+
+## Utilisation
+
+Différentes actions sont possibles via les boutons situés dans le coin supérieur-droit :
+
+- Acheter une nouvelle tour : Trois tours sont offertes par défaut. Pour les placer, vous devrez cliquer sur des zones valides de la map.
+
+- Augmenter la capacité de mana
+
+- Acheter une gemme de niveau $n$ : Pour choisir le niveau, vous pouvez utliser le compteur situé en dessous, à l'aide de ses boutons de dé/incrémentation.
+
+- Fusionner des gemmes : Il suffit seulement de glisser une gemme vers une autre présente dans l'inventaire. Si l'action est possible, les gemmes seront fusionnées.
+
+Dans tous les cas, le montant des actions est affiché par le survol du curseur sur les bontons présentés.
+
+D'autre part, les gemmes peuvent être déplacées par glisser-déposer.
 
 ## Documentation doxygen
 
