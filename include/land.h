@@ -12,7 +12,7 @@
 #include "event.h"
 #include "mana.h"
 
-#define H_PARAMETER 100
+#define H_PARAMETER 25
 
 typedef struct Game Game;
 
