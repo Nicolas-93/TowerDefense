@@ -48,7 +48,8 @@ int main(int argc, char *argv[]) {
 
     Game_draw_game_over(&game);
     MLV_update_window();
-    MLV_wait_milliseconds(5000);
+    if (RUNNING)
+        MLV_wait_milliseconds(5000);
 
     Game_free(&game);
     Image_free();
